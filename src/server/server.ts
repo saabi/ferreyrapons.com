@@ -1,5 +1,6 @@
 const PORT = process.env.PORT || 3000;
 
+import http = require('http');
 import * as Koa from "koa";
 const fileServer = require('koa-static');
 const convert = require('koa-convert')
@@ -20,6 +21,8 @@ app.use(async (ctx: Koa.Context, next: Function) => {
 );
 */
 
-/* let server = */ app.listen(PORT, () => {
+const server = http.createServer(app.callback());
+
+server.listen(PORT, '127.0.0.1', () => {
     console.log(`Server listening on port ${PORT}.`);
 });
