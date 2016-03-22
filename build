@@ -1,0 +1,5 @@
+echo 'Compiling server code...'
+tsc -p src/server
+echo 'Compiling client code...'
+tsc -p src/client
+echo 'Done!'
