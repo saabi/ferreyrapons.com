@@ -1,0 +1,17 @@
+.screen {display:none}
+
+#pentas > div > img {
+    display:none;
+}
+
+body {
+    font-size: 12pt;
+}
+
+h4 {
+    float:left;
+    width: 8em;
+    text-align: right;
+    margin: 0;
+    padding: 0;
+}

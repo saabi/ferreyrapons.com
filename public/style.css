@@ -1,0 +1,264 @@
+html {
+    font-family: sans-serif;
+    background: #000318;
+/*    background: linear-gradient(45deg, #807570 0%, #E0D0B5 100%);
+    background: linear-gradient(45deg, #403530 0%, #E0D0B5 100%);
+*/    color: white;
+    -webkit-transition: background-color 1s;
+    -moz-transition:    background-color 1s;
+    -ms-transition:     background-color 1s;
+    -o-transition:      background-color 1s;
+    transition:         background-color 1s;
+    perspective: 1000px;
+    perspective-origin: 50% 50%;
+    width: 100%;
+    height: 100%;
+}
+body {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-family: 'Ubuntu', sans-serif;
+    /*transform: translateZ(100px);*/
+    overflow: hidden;
+}
+header {
+    position: absolute;
+    width: calc(100% - 100vh);
+    min-width: 500px;
+    margin: 8vh 5vh;
+    text-align: center;
+    text-shadow: 2px 2px 8px black;
+}
+h1 {
+    font-weight: 500;
+    font-size: 30px;
+    margin: 0;
+    display: inline-block;
+}
+body > header > h2 {
+    font-weight: 300;
+    font-size: 20px;
+    margin: 0;
+    color: #B17E2C;
+    display: inline-block;
+}
+
+.content {
+    display: none;
+}
+.print {
+    display: none;
+}
+#pentas > a:active .content {
+    display: block;
+    transform-style: initial;
+}
+.content > section {
+    display:none;
+}
+.content:target {
+    display:block;
+    margin: 4em;
+    background: rgba(255,255,255,0.75);
+    border-radius: 10px;
+    padding: 10px;
+    color:black;
+}
+
+#particles,#speed {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+}
+#particles {
+    width: 100%;
+    z-index: -1;
+}
+#speed {display: none;}
+#udgy {
+    position:absolute;
+    visibility: hidden;
+    height:100%;
+    top:0;
+    right: 0;
+}
+
+#pentas {
+    position: absolute;
+    top:55%;
+    left: 30%;
+    width: 270px;
+    height: 270px;
+    margin: 0;
+    margin-left: -135px;
+    margin-top: -135px;
+    padding: 0;
+
+    transform-origin: 50% 50%;
+    transform-style: preserve-3d;
+    transform: scale(0.6) rotateY(30deg) rotateX(45deg);
+    font-size: 40px;
+}
+#pentas a {
+    text-decoration: none;
+}
+#pentas > a > h2 {
+    font-size: 40px;
+    color: silver;
+    opacity: 0.25;
+    transition: opacity 0.5s, transform 0.5s, text-shadow 0.5s, color 0.5s;
+}
+#pentas:hover > a > h2 {
+    opacity: 1;
+}
+#pentas:hover > a:hover > h2 {
+    color: #FFFF55;
+}
+#pentas > a:before {
+    position: absolute;
+    top: 0;
+    left:0;
+    width:270px;
+    content: url(img/penta.svg);
+    opacity: 0.5;
+    transform-style: preserve-3d;
+    text-shadow: -5px -3px 9px #000000;
+    transition: opacity 0.5s;
+}
+
+#pentas > a:hover:before {
+    opacity: 1;
+    content: url(img/pentab.svg);
+}
+#pentas > a > img {
+    position: absolute;
+    transition: transform 0.5s;
+}
+#pentas > a:hover > img {
+    position: absolute;
+    transform: rotateZ(36deg) translate3d(8px,30px,5px) scale(0.9);
+}
+
+#p1 h2, #p2 h2,#p3 h2,#p4 h2,#p5 h2,#p6 h2 {
+    width:160px;
+    text-align: center;
+    transition: transform 0.5s, text-shadow 0.5s;
+    text-shadow: -5px -3px 9px #000000;
+    margin:0;
+    padding:0;
+}
+
+#p1,#p2,#p3,#p4,#p5,#p6 {
+    position: absolute;
+    width: 270px;
+    height: 270px;
+    transform-origin: 50% 50%;
+    transition: transform 0.5s;
+    transform-origin: 50% 50%;
+    transform-style: preserve-3d;
+}
+#p1 {
+    transform: rotateZ(0deg);
+}
+#p1:hover {
+    transform: rotateX(-45deg) rotateY(-30deg) rotateZ(-180deg) translate3D(-83px,-35px,200px);
+}
+#p2:hover, #p3:hover, #p4:hover, #p5:hover {
+    transform: rotateX(-45deg) rotateY(-30deg) rotateZ(-36deg) translate3D(130px,0,200px);
+}
+#p6:hover {
+    transform: rotateX(-45deg) rotateY(-30deg) rotateZ(-36deg) translate3D(74px,15px,200px);
+}
+#p1 img {
+    transform: translate3d(0px,5px,5px) scale(0.6);
+}
+#p1:hover img {
+    transform: rotateZ(180deg) translateY(1px) translateZ(5px) scale(0.8) !important;
+}
+#p1:hover h2 {
+    opacity: 1 !important;
+}
+#p1 h2 {
+    transform: rotateZ(0deg) rotateX(-45deg) translate3d(-25px,-10px,30px);
+    transform: rotateZ(-108deg) translate3d(-40px,-29px,15px) rotateX(-58deg);
+    opacity: 0 !important;
+}
+#p2 img {
+    transform: rotateZ(72deg) translate3d(3px,-2px,5px) scale(0.6);
+}
+#p2 h2 {
+    transform: rotateZ(108deg) rotateX(-45deg) translate3d(-25px,-10px,30px);
+    transform: rotateZ(-288deg) translate3d(123px,98px,15px) rotateX(-58deg);
+}
+#p3 img {
+    transform: translate3d(-3px,0px,5px) scale(0.6);
+}
+#p3 h2 {
+    transform: rotateZ(0deg) translate3d(45px,240px,15px) rotateX(-58deg);
+}
+#p4 img {
+    transform: translate3d(-3px,5px,5px) scale(0.6);
+}
+#p4 h2 {
+    transform: rotateZ(-72deg) translate3d(-157px,202px,15px) rotateX(-58deg);
+}
+#p5 img {
+    transform: rotateZ(-72deg) translate3d(-10px,-3px,5px) scale(0.6);
+}
+#p5 h2 {
+    /*transform: rotateZ(-108deg) rotateX(-45deg) translate3d(-25px,-10px,30px);*/
+    transform: rotateZ(-144deg) translate3d(-153px,34px,15px) rotateX(-58deg);
+}
+#p6 img {
+    transform: rotateZ(180deg) translate3d(-3px,-11px,5px) scale(0.6);
+}
+#p6 h2 {
+    transform: rotateZ(180deg) rotateX(-45deg) translate3d(-25px,-10px,30px);
+    transform: rotateZ(-216deg) translate3d(3px,-30px,15px) rotateX(-54deg);
+}
+#p2:hover h2, #p3:hover h2, #p4:hover h2, #p5:hover h2{
+    transform: rotateZ(36deg) rotateX(0deg) translate3D(80px,-31px,10px);
+    text-shadow: 2px 2px 4px #000000 ;
+}
+#p6:hover h2 {
+    transform: rotateZ(36deg) rotateX(0deg) translate3D(80px,-31px,10px);
+    text-shadow: 2px 2px 4px #000000 ;
+}
+#p1:hover h2 {
+    transform: rotateZ(-180deg) rotateX(0deg) translate3d(0,-68px,15px);
+    text-shadow: 2px 2px 4px #000000 ;
+}
+#p1 {
+    top:  0px;
+    left: 0px;
+}
+#p2 {
+    top:    92px;
+    left: -243px;
+    transform: rotateZ(252deg);
+}
+#p3 {
+    top:  -193px;
+    left: -151px;
+    transform: rotateZ(-36deg);
+}
+#p4 {
+    top:  -193px;
+    left:  151px;
+    transform: rotateZ(36deg);
+}
+#p5 {
+    top:   92px;
+    left: 243px;
+    transform: rotateZ(108deg);
+}
+#p6 {
+    top:270px;
+    left:0px;
+    transform: rotateZ(180deg);
+}

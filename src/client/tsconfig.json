@@ -14,7 +14,9 @@
   },
   "files": [
     "../../typings/browser.d.ts",
-    "../common/test.ts",
-    "client.ts"
+    "../common/Vec2D.ts",
+    "Path2D.d.ts",
+    "LoadMeter.ts",
+    "main.ts"
   ]
 }
