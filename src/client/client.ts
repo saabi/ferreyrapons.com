@@ -5,4 +5,3 @@
 import {TestClass} from "../common/test";
 
 let test = new TestClass();
-console.log('Done!');
