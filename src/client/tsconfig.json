@@ -1,0 +1,20 @@
+{
+  "compilerOptions": {
+    "target": "ES5",
+    "module": "amd",
+    "allowJs": true,
+    "outFile": "../../public/js/main.js",
+    "pretty": true,
+    "noImplicitAny": true,
+    "removeComments": true,
+    "preserveConstEnums": true,
+    "experimentalDecorators": true,
+    "emitDecoratorMetadata": true,
+    "sourceMap": true
+  },
+  "files": [
+    "../../typings/browser.d.ts",
+    "../common/test.ts",
+    "client.ts"
+  ]
+}
