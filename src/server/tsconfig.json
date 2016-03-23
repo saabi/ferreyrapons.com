@@ -3,6 +3,7 @@
     "target": "ES6",
     "module": "commonjs",
     "outDir": "../../lib",
+    "jsx": "react",
     "pretty": true,
     "noImplicitAny": true,
     "removeComments": true,
@@ -13,7 +14,7 @@
   },
   "files": [
     "../../typings/main.d.ts",
-    "../common/test.ts",
+    "../common/test.tsx",
     "server.ts"
   ]
 }

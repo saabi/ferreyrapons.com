@@ -10,12 +10,20 @@
     <body>
 
         World!
+        <div id="example"></div>
 
 
-
-        <script src="js/components/almond/almond.js"></script>
+        <script src="js/components/requirejs/require.js"></script>
         <script src="js/main.js"></script>
-        <script>require(['client/client']);</script>
+        <script>
+            require.config({
+                paths: {
+                    "react": "/js/components/react/react",
+                    "react-dom": "/js/components/react/react-dom"
+                }
+            });
+            require(['client/client']);
+        </script>
 
     </body>
 
