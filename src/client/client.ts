@@ -3,5 +3,7 @@
  */
 
 import {TestClass} from "../common/test";
+import {WebGLSupport} from "../common/webgl";
 
-let test = new TestClass();
+//let test = new TestClass();
+let webgl = new WebGLSupport();

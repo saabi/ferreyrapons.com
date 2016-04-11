@@ -4,22 +4,31 @@
     <head>
 
         <title>Hello</title>
-
+        <style>
+            html {
+                background-color: #fff;
+            }
+            * {
+                margin: 0;
+                padding: 0;
+            }
+        </style>
     </head>
 
     <body>
-
-        World!
-        <div id="example"></div>
-
-
         <script src="js/components/requirejs/require.js"></script>
         <script src="js/main.js"></script>
         <script>
             require.config({
                 paths: {
                     "react": "/js/components/react/react",
-                    "react-dom": "/js/components/react/react-dom"
+                    "react-dom": "/js/components/react/react-dom",
+                    "three": "/js/components/three.js/three"
+                },
+                shim: {
+                    three: {
+                        exports: 'THREE'
+                    }
                 }
             });
             require(['client/client']);

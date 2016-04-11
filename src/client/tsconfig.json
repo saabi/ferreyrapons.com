@@ -16,6 +16,7 @@
   "files": [
     "../../typings/browser.d.ts",
     "../common/test.tsx",
+    "../common/webgl.ts",
     "client.ts"
   ]
 }
