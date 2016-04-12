@@ -19,6 +19,7 @@
   "dependencies": {
     "system.js": "^0.19.24",
     "requirejs": "^2.2.0",
-    "almond": "^0.3.1"
+    "almond": "^0.3.1",
+    "three.js": "^0.75.0"
   }
 }

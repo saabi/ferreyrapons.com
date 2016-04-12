@@ -13,7 +13,6 @@
   },
   "files": [
     "../../typings/main.d.ts",
-    "../common/test.ts",
     "server.ts"
   ]
 }

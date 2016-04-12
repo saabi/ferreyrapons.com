@@ -17,6 +17,8 @@
     "../common/Vec2D.ts",
     "Path2D.d.ts",
     "LoadMeter.ts",
-    "main.ts"
+    "main.ts",
+    "../common/webgl.ts",
+    "client.ts"
   ]
 }

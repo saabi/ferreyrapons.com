@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Million Letter Demo</title>
+    <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Ubuntu:500,300'>
+    <link rel="stylesheet" type='text/css' href="style.css" media="screen">
+    <link rel="stylesheet" type='text/css' href="printstyle.css" media="print">
+</head>
+
+<body>
+
+
+    <script src="js/components/requirejs/require.js"></script>
+    <script src="js/main.js"></script>
+    <script>
+        require.config({
+            paths: {
+                "three": "/js/components/three.js/three"
+            },
+            shim: {
+                three: {
+                    exports: 'THREE'
+                }
+            }
+        });
+        require(['client/client']);
+    </script>
+
+</body>
+
+</html>
