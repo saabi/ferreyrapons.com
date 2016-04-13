@@ -3,7 +3,8 @@
  */
 import * as THREE from 'three';
 
-const fragmentShader = `      varying float vZ;
+const fragmentShader = `
+      varying float vZ;
       varying vec2 vUv;
       uniform float time;
       uniform float effectAmount;
@@ -19,7 +20,8 @@ const fragmentShader = `      varying float vZ;
         float b = abs(vZ) / 540.0;
         gl_FragColor = mix(diffuse, vec4(rg,b,diffuse.a), effectAmount);
       }`;
-const vertexShader = `      varying float vZ;
+const vertexShader = `
+      varying float vZ;
       uniform float time;
       uniform float effectAmount;
       varying vec2 vUv;
@@ -61,22 +63,73 @@ const vertexShader = `      varying float vZ;
 
 const polygonShader = `
       uniform float time;
+      varying float vIdx;
+      varying float vRnd;
+
+      highp float randhp(vec2 co) {
+        highp float a = 12.9898;
+        highp float b = 78.233;
+        highp float c = 43758.5453;
+        highp float dt= dot(co.xy ,vec2(a,b));
+        highp float sn= mod(dt,3.14);
+        return fract(sin(sn) * c);
+      }
+      float rand(vec2 co)
+      {
+        return fract(sin(dot(co.xy,vec2(12.9898,78.233))) * 43758.5453);
+      }
+      vec3 rotate(vec3 pos, float angle) {
+        angle = mod(angle, 3.14159265359*2.0);
+        if (angle<0.0) angle += 3.14159265359*2.0;
+        float ca = cos(angle);
+        float sa = sin(angle);
+        vec3 pos1 = pos;
+        pos1.x = ca*pos.x - sa*pos.y;
+        pos1.y = sa*pos.x + ca*pos.y;
+        return pos1;
+      }
+
+      vec3 process(float idx, vec3 fPos) {
+/*        if (idx < 30.0) {
+            fPos = vec3(0.0,0.0,0.0);
+        }*/
+        fPos *= 2.5;
+        vRnd = randhp(vec2(idx,0.0));
+        vRnd = 2.0*(vRnd-0.5);
+        fPos *= abs(vRnd);
+        fPos = rotate(fPos, time*5.0*vRnd);
+
+        //float w = log(idx*2.0)/3.1415;
+        float w = sqrt(idx*2.5);
+        fPos.x = fPos.x + sin(w*3.14/2.0)*w;
+        fPos.y = fPos.y + cos(w*3.14/2.0)*w;
+        fPos.z = vRnd;
+
+        vIdx = idx;
+
+        return fPos;      
+      }
 
       void main() {
         float idx = floor(position.x/2.2);
         vec3 mid = vec3(idx*2.2 + 1.1, 0.0, 0.0);
         vec3 fPos = position-mid;
-        //float w = log(idx*2.0)/3.1415;
-        float w = sqrt(idx*2.5);
-        fPos.x = fPos.x + sin(w*3.14/2.0+time)*w;
-        fPos.y = fPos.y + cos(w*3.14/2.0+time)*w;
+
+        fPos = process(idx, fPos);
+
         vec4 mvPosition = modelViewMatrix * vec4(fPos, 1.0);
         vec4 p = projectionMatrix * mvPosition;
         gl_Position = p;
       }`;
 const simpleFragmentShader = `
+      varying float vIdx;
+      varying float vRnd;
       void main() {
-        gl_FragColor = vec4(1.0,1.0,0.0,1.0);
+        float r = vRnd;
+        float g = -r;
+        if (r<0.0) r = 0.0;
+        if (g<0.0) g = 0.0;
+        gl_FragColor = vec4(r,g,0.0,0.5);
       }`;
 function regularPolygon(geo:THREE.Geometry, sides:number, cx:number, cy:number, i:number) {
     const TWOPI = Math.PI *2;
