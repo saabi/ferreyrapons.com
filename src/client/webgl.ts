@@ -68,6 +68,7 @@ const polygonShader = `
       varying float vIdx;
       varying float vRnd;
 
+      varying vec2 vUv;
       highp float randhp(vec2 co) {
         highp float a = 12.9898;
         highp float b = 78.233;
@@ -136,12 +137,14 @@ const polygonShader = `
 
         vec4 mvPosition = modelViewMatrix * vec4(fPos, 1.0);
         vec4 p = projectionMatrix * mvPosition;
+        vUv = uv;
         gl_Position = p;
       }`;
 const simpleFragmentShader = `
       uniform float time;
       varying float vIdx;
       varying float vRnd;
+      varying vec2 vUv;
       void main() {
         float r = vRnd;
         float g = -r;
@@ -152,7 +155,8 @@ const simpleFragmentShader = `
         if (g<0.0) g = 0.0;
         //gl_FragColor = vec4(r,g,b,0.5);
         //gl_fragColor *= (30000.0-vIdx)/30000.0;
-        gl_FragColor = vec4(r,g,b,a);
+        //gl_FragColor = vec4(r,g,b,a);
+        gl_FragColor = vec4(vUv,0.0,a);
       }`;
 function regularPolygon(geo:THREE.Geometry, sides:number, cx:number, cy:number, i:number) {
     const TWOPI = Math.PI *2;
@@ -172,6 +176,28 @@ function regularPolygon(geo:THREE.Geometry, sides:number, cx:number, cy:number, 
     }
 }
 
+function regularPolygon2(geo:THREE.Geometry, sides:number, cx:number, cy:number, i:number) {
+    const TWOPI = Math.PI *2;
+    const pa = TWOPI/sides;
+    let a1 = TWOPI/2/sides;
+    while (a1 < TWOPI) {
+        geo.vertices.push(new THREE.Vector3( i*2.2 + cx + Math.sin(a1), cy + Math.cos(a1), 0 ));
+        a1 += pa;
+    }
+    let side = 1;
+    while (side < sides-1) {
+        let baseVertex = i*(sides);
+        let face = new THREE.Face3(baseVertex, baseVertex + side, baseVertex + side+1);
+        let v = geo.vertices;
+        geo.faceVertexUvs[0].push([
+            new THREE.Vector2((v[baseVertex].x-cx-i*2.2)/2+0.5, (v[baseVertex].y-cy)/2+0.5),
+            new THREE.Vector2((v[baseVertex+side].x-cx-i*2.2)/2+0.5, (v[baseVertex+side].y-cy)/2+0.5),
+            new THREE.Vector2((v[baseVertex+side+1].x-cx-i*2.2)/2+0.5, (v[baseVertex+side+1].y-cy)/2+0.5)
+        ]);
+        geo.faces.push(face);
+        side++;
+    }
+}
 function createPolygons (amount:number, sides: number, uniforms: any) {
     let geo = new THREE.Geometry();
 
@@ -179,7 +205,7 @@ function createPolygons (amount:number, sides: number, uniforms: any) {
     const cy = 0;
 
     for (let i=0; i<amount; i++) {
-        regularPolygon(geo, 5, cx, cy, i);
+        regularPolygon2(geo, sides, cx, cy, i);
     }
 
     let shaderMaterial = new THREE.ShaderMaterial({
