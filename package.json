@@ -4,7 +4,7 @@
   "description": "Sebastian Ferreyra Professional CV & Site",
   "main": "server.js",
   "scripts": {
-    "start": "node --harmony lib/server/server.js",
+    "start": "node --harmony lib/server.js",
     "build": ""
   },
   "author": "Sebastian Ferreyra",

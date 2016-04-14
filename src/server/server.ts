@@ -23,6 +23,7 @@ app.use(async (ctx: Koa.Context, next: Function) => {
 
 const server = http.createServer(app.callback());
 
-server.listen(PORT, '127.0.0.1', () => {
+const listener = server.listen(PORT, () => {
     console.log(`Server listening on port ${PORT}.`);
+    console.log(listener.address());
 });
