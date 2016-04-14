@@ -146,9 +146,13 @@ const simpleFragmentShader = `
         float r = vRnd;
         float g = -r;
         float b = (sin(vIdx/1000.0+time*time/10000.0)+1.0)/2.0;
+        float a = (30000.0-vIdx)/30000.0;
+        a *= a;
         if (r<0.0) r = 0.0;
         if (g<0.0) g = 0.0;
-        gl_FragColor = vec4(r,g,b,0.5);
+        //gl_FragColor = vec4(r,g,b,0.5);
+        //gl_fragColor *= (30000.0-vIdx)/30000.0;
+        gl_FragColor = vec4(r,g,b,a);
       }`;
 function regularPolygon(geo:THREE.Geometry, sides:number, cx:number, cy:number, i:number) {
     const TWOPI = Math.PI *2;
