@@ -2,6 +2,7 @@
  * Created by ushi on 11/04/16.
  */
 import * as THREE from 'three';
+import * as OrbitControls from 'OrbitControls';
 
 const fragmentShader = `
       varying float vZ;
@@ -329,7 +330,7 @@ export class WebGLSupport {
         //camera.lookAt(scene.position);
 
 
-
+/*
         let down = false;
         let sx = 0, sy = 0;
         window.onmousedown = function (ev){
@@ -354,13 +355,19 @@ export class WebGLSupport {
             if (down) {
                 let dx = ev.clientX - sx;
                 let dy = ev.clientY - sy;
-                camera.rotation.y += dx/500 * (camera.fov/45);
-                camera.rotation.x += dy/500 * (camera.fov/45);
+                //camera.rotation.y += dx/500 * (camera.fov/45);
+                //camera.rotation.x += dy/500 * (camera.fov/45);
+                camera.position.y = 40;
+                camera.lookAt(scene.position);
+                //camera.
                 sx += dx;
                 sy += dy;
             }
         };
+*/
 
+
+        let controls = new OrbitControls.OrbitControls(camera);
         /*
         let control = {
             'Animation': 5,
