@@ -64,6 +64,7 @@ const vertexShader = `
 
 const polygonShader = `
       uniform float time;
+      uniform vec3 camPos;
       varying float vIdx;
       varying float vRnd;
 
@@ -89,6 +90,16 @@ const polygonShader = `
         pos1.y = sa*pos.x + ca*pos.y;
         return pos1;
       }
+      vec3 lookAt(vec3 eye1, vec3 fPos) {
+        vec3 up = vec3(0.0,1.0,0.0);
+        vec3 za = eye1;
+        vec3 xa = normalize(cross(up,za));
+        vec3 ya = cross(za,xa);
+        
+        mat4 la = mat4(xa,0.0,ya,0.0,za,0.0,0.0,0.0,0.0,1.0);
+
+        return (la*vec4(fPos,1.0)).xyz;
+      }
 
       vec3 process(float idx, vec3 fPos) {
 /*        if (idx < 30.0) {
@@ -103,13 +114,15 @@ const polygonShader = `
 
         //float w = log(idx*2.0)/3.1415;
         float w = sqrt(idx*2.5);
-        fPos.x = fPos.x + sin(w*3.14/2.0)*w;
-        fPos.y = fPos.y + cos(w*3.14/2.0)*w;
-        fPos.z = vRnd-sin(w*time*time/10000.0)*30.0;
+        vec3 mid = vec3(sin(w*3.14/2.0)*w, cos(w*3.14/2.0)*w, vRnd-sin(w*time*time/10000.0)*30.0);
+
         //fPos.z = vRnd-w*30.0;
-        fPos.z += 5.0*sin(time*1.0/randhp(vec2(idx,2.0))) + 1.0;
+        mid.z += 5.0*sin(time*1.0/randhp(vec2(idx,2.0))) + 1.0;
 
         vIdx = idx;
+
+        fPos = lookAt(normalize(mid-camPos), fPos);
+        fPos += mid;
 
         return fPos;      
       }
@@ -323,7 +336,8 @@ export class WebGLSupport {
         */
 
         let uniforms = {
-            time : { type: "f", value: 0.0 }
+            time : { type: "f", value: 0.0 },
+            camPos : { type: 'v3', value: new THREE.Vector3() }
             //size : { type: "v2", value: new THREE.Vector2(width,height) },
             //map : { type: "t", value: tex },
             //effectAmount : { type: "f", value: 0.0 }
@@ -398,19 +412,8 @@ export class WebGLSupport {
         let animate = function(t:number) {
             requestAnimationFrame(animate/*, renderer.domElement*/);
             uniforms.time.value = t/1000;
-            //uniforms.effectAmount.value = control.Animation/100;
-            //let i:number;
-            //let letterCount = control.Books * str.length;
-            //letterCountElement.textContent = (control.Books * str.length).toString();
-            /*
-            for (i=1; i<control.Books; i++) {
-                books[i].visible = true;
-            }
-            for (i=control.Books; i<books.length; i++) {
-                books[i].visible = false;
-            }
-            top.position.y += 0.03;
-            */
+            uniforms.camPos.value = camera.position;
+
             renderer.render(scene, camera);
         };
         animate(0);
