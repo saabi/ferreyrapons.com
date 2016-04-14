@@ -95,7 +95,7 @@ const polygonShader = `
             fPos = vec3(0.0,0.0,0.0);
         }*/
         fPos *= sin(time*5.0/randhp(vec2(idx,1.0))) + 1.0;
-        fPos *= 2.5;
+        fPos *= 5.5;
         vRnd = randhp(vec2(idx,0.0));
         vRnd = 2.0*(vRnd-0.5);
         fPos *= abs(vRnd);
@@ -105,7 +105,7 @@ const polygonShader = `
         float w = sqrt(idx*2.5);
         fPos.x = fPos.x + sin(w*3.14/2.0)*w;
         fPos.y = fPos.y + cos(w*3.14/2.0)*w;
-        fPos.z = vRnd-sin(w*time/100.0)*30.0;
+        fPos.z = vRnd-sin(w*time*time/10000.0)*30.0;
         //fPos.z = vRnd-w*30.0;
         fPos.z += 5.0*sin(time*1.0/randhp(vec2(idx,2.0))) + 1.0;
 
@@ -132,7 +132,7 @@ const simpleFragmentShader = `
       void main() {
         float r = vRnd;
         float g = -r;
-        float b = (sin(vIdx/1000.0+time/100.0)+1.0)/2.0;
+        float b = (sin(vIdx/1000.0+time*time/10000.0)+1.0)/2.0;
         if (r<0.0) r = 0.0;
         if (g<0.0) g = 0.0;
         gl_FragColor = vec4(r,g,b,0.5);
