@@ -142,6 +142,7 @@ const polygonShader = `
       }`;
 const simpleFragmentShader = `
       uniform float time;
+      uniform sampler2D texture1;
       varying float vIdx;
       varying float vRnd;
       varying vec2 vUv;
@@ -156,7 +157,10 @@ const simpleFragmentShader = `
         //gl_FragColor = vec4(r,g,b,0.5);
         //gl_fragColor *= (30000.0-vIdx)/30000.0;
         //gl_FragColor = vec4(r,g,b,a);
-        gl_FragColor = vec4(vUv,0.0,a);
+        //gl_FragColor = vec4(vUv,0.0,a);
+        vec4 textureColor = texture2D(texture1, vUv);
+        if ( textureColor.a < 0.5 ) discard;
+        gl_FragColor = textureColor;
       }`;
 function regularPolygon(geo:THREE.Geometry, sides:number, cx:number, cy:number, i:number) {
     const TWOPI = Math.PI *2;
@@ -367,7 +371,8 @@ export class WebGLSupport {
 
         let uniforms = {
             time : { type: "f", value: 0.0 },
-            camPos : { type: 'v3', value: new THREE.Vector3() }
+            camPos : { type: 'v3', value: new THREE.Vector3() },
+            texture1: { type: 't', value: THREE.ImageUtils.loadTexture( '/img/5.png' ) }
             //size : { type: "v2", value: new THREE.Vector2(width,height) },
             //map : { type: "t", value: tex },
             //effectAmount : { type: "f", value: 0.0 }
