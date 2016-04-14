@@ -81,8 +81,8 @@ const polygonShader = `
         return fract(sin(dot(co.xy,vec2(12.9898,78.233))) * 43758.5453);
       }
       vec3 rotate(vec3 pos, float angle) {
-        angle = mod(angle, 3.14159265359*2.0);
-        if (angle<0.0) angle += 3.14159265359*2.0;
+        //angle = mod(angle, 3.14159265359*2.0);
+        //if (angle<0.0) angle += 3.14159265359*2.0;
         float ca = cos(angle);
         float sa = sin(angle);
         vec3 pos1 = pos;
