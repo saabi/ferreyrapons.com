@@ -157,6 +157,7 @@ const foregroundPolygonShader = `
         vec2 coord = vec2(mid1.x, mid1.y);
         coord /= vec2(width, height);
         coord += vec2(0.5, 0.5);
+        coord += vec2(sin(time/1.6+coord.x*3.1415)/25.0,cos(time/2.0+coord.y*3.1415)/20.0);
         vFaceColor = texture2D(face, coord);
         float a = 1.0 - pow(vFaceColor.w, 1.0/1.2);
   
