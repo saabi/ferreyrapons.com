@@ -106,7 +106,7 @@ const foregroundPolygonShader = `
       varying float vIdx;
       varying float vT;
       varying vec2 vUv;
-      varying vec2 coord;
+      varying vec4 vFaceColor;
 
       highp float randhp(vec2 co) {
         highp float a = 12.9898;
@@ -154,11 +154,11 @@ const foregroundPolygonShader = `
 
  
         vec3 mid1 = vec3(mod(x0+vx*100.*time,width)-width/2.0, mod(y0+vy*100.*time,height)-height/2.0, 0.0);
-        coord = vec2(mid1.x, mid1.y);
+        vec2 coord = vec2(mid1.x, mid1.y);
         coord /= vec2(width, height);
         coord += vec2(0.5, 0.5);
-        vec4 faceColor = texture2D(face,coord);
-        float a = 1.0- pow(faceColor.w, 1.0/1.2);
+        vFaceColor = texture2D(face, coord);
+        float a = 1.0 - pow(vFaceColor.w, 1.0/1.2);
   
         //fPos = lookAt(normalize(mid1-camPos), fPos);
         fPos *= a*t;
@@ -188,7 +188,7 @@ const foregroundFragmentShader = `
       varying vec2 vUv;
       varying float vIdx;
       varying float vT;
-      varying vec2 coord;
+      varying vec4 vFaceColor;
 
       void main() {
         float idx = mod(vIdx,6.0)+2.0;
@@ -197,7 +197,7 @@ const foregroundFragmentShader = `
         vec2 uv = vUv;
         uv += offset;
         uv /= vec2(2.0,4.0);
-        vec4 faceColor = texture2D(face,coord);
+        vec4 faceColor = vFaceColor;
         float a = faceColor.w;
         faceColor.w = 1.0;
         vec4 textureColor = texture2D(icons, uv) * faceColor;
