@@ -226,20 +226,43 @@ function regularPolygon2(geo:THREE.Geometry, sides:number, cx:number, cy:number,
     const TWOPI = Math.PI *2;
     const pa = TWOPI/sides;
     let a1 = TWOPI/2/sides;
+    let xmx = -1;
+    let xmn = 1;
+    let ymx = -1;
+    let ymn = 1;
     while (a1 < TWOPI) {
-        geo.vertices.push(new THREE.Vector3( i*2.2 + cx + Math.sin(a1), cy + Math.cos(a1), 0 ));
+        let x = Math.sin(a1);
+        let y = Math.cos(a1)
+        geo.vertices.push(new THREE.Vector3(i*2.2 + cx + x, cy + y, 0 ));
+        xmx =Math.max(xmx,x);
+        xmn =Math.min(xmn,x);
+        ymx =Math.max(ymx,y);
+        ymn =Math.min(ymn,y);
         a1 += pa;
     }
+    let min = new THREE.Vector2(xmn,ymn);
+    min.addScalar(1);
+    min.divideScalar(2);
+    let scale = new THREE.Vector2(xmx,ymx);
+    scale.addScalar(1);
+    scale.divideScalar(2);
+    scale.sub(min);
     let side = 1;
     while (side < sides-1) {
         let baseVertex = i*(sides);
         let face = new THREE.Face3(baseVertex, baseVertex + side, baseVertex + side+1);
         let v = geo.vertices;
-        geo.faceVertexUvs[0].push([
+        let uvs = [
             new THREE.Vector2((v[baseVertex].x-cx-i*2.2)/2+0.5, (v[baseVertex].y-cy)/2+0.5),
             new THREE.Vector2((v[baseVertex+side].x-cx-i*2.2)/2+0.5, (v[baseVertex+side].y-cy)/2+0.5),
             new THREE.Vector2((v[baseVertex+side+1].x-cx-i*2.2)/2+0.5, (v[baseVertex+side+1].y-cy)/2+0.5)
-        ]);
+        ];
+        for (let uvi = 0; uvi < uvs.length; uvi++) {
+            let uv = uvs[uvi];
+            uv.sub(min);
+            uv.divide(scale);
+        }
+        geo.faceVertexUvs[0].push(uvs);
         geo.faces.push(face);
         side++;
     }
