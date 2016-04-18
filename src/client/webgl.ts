@@ -314,12 +314,10 @@ export class WebGLSupport {
         let scene = new THREE.Scene();
         camera.position.z = radius;
         scene.add(camera);
-        
+
         let backgroundUniforms = {
             time : { type: "f", value: 0.0 },
         };
-        // instantiate a loader
-        var loader = new THREE.TextureLoader();
 
         let foregroundUniforms = {
             time : { type: "f", value: 0.0 },
