@@ -6,7 +6,7 @@ import * as OrbitControls from 'OrbitControls';
 
 const backgroundPolygonShader = `
       uniform float time;
-      uniform vec3 camPos;
+      uniform vec3 mouse;
 
       varying float vIdx;
       varying float vT;
@@ -55,18 +55,18 @@ const backgroundPolygonShader = `
         float size = rand(vec2(idx, 5.0))*10.0;
         float timeOffset = rand(vec2(idx,3.0))*10.0;
         float t = mod(time+timeOffset, life);
-        float t2 = (time-timeOffset)/10.0;
-        if (t2<0.0) t2 = 0.0;
-        if (t2>1.0) t2 = 1.0;
+        float t2 = clamp((time-timeOffset)/10.0,0.0,1.0);
  
         vT = t/life;
 
         vec3 mid1 = vec3(x0+vx*100.*t, vy*100.*t, 0.0);
 
-        fPos *= t2;
+        float prox = 2.0-smoothstep(0.0, 20.0, distance(mouse,mid1));
+
+        fPos *= t2*prox;
         fPos *= (1.0-vT)*size;
         fPos = rotate(fPos, time*5.0*vx);
-        //fPos = lookAt(normalize(mid1-camPos), fPos);
+        //fPos = lookAt(normalize(mid1-cameraPosition), fPos);
         fPos += mid1;
 
         return fPos;      
@@ -100,8 +100,12 @@ const foregroundPolygonShader = `
       uniform float width;
       uniform float height;
       uniform float size;
-      uniform vec3 camPos;
+      uniform vec3 mouse;
       uniform sampler2D face;
+      uniform sampler2D icons;
+      uniform float transitionTime;
+      uniform float oldIdx;
+      uniform float newIdx;
 
       varying float vIdx;
       varying float vT;
@@ -142,27 +146,47 @@ const foregroundPolygonShader = `
 
         return (la*vec4(fPos,1.0)).xyz;
       }
+      vec2 calcIconUVs(float idx, vec2 coord) {
+        float idx2 = mod(idx,6.0)+2.0;
+        vec2 offset = vec2(mod(idx2,2.0),0.0);
+        offset.y = floor(idx2/2.0);
+        vec2 iuv = coord;
+        iuv += offset;
+        iuv /= vec2(2.0,4.0);
+        return iuv;
+      }
 
       vec3 process(float idx, vec3 fPos) {
         float x0 = (rand(vec2(idx,4.0)))*width;
         float y0 = (rand(vec2(idx,5.0)))*height;
         float vx = (rand(vec2(idx,0.0))-0.5)*0.1;
         float vy = (rand(vec2(idx,1.0))-0.5)*0.1;
-        float t = (time-idx/250.0)/5.0;
-        if (t<0.0) t = 0.0;
-        if (t>1.0) t = 1.0;
-
+        float t = clamp((time-idx/250.0)/5.0,0.0,1.0);
+        float trans = smoothstep(transitionTime, transitionTime+1.0, time);
  
         vec3 mid1 = vec3(mod(x0+vx*100.*time,width)-width/2.0, mod(y0+vy*100.*time,height)-height/2.0, 0.0);
         vec2 coord = vec2(mid1.x, mid1.y);
         coord /= vec2(width, height);
         coord += vec2(0.5, 0.5);
         coord += vec2(sin(time/1.6+coord.x*3.1415)/25.0,cos(time/2.0+coord.y*3.1415)/20.0);
-        vFaceColor = texture2D(face, coord);
+        
+        vec4 newColor = newIdx < 0.0 ? texture2D(face, coord) : texture2D(icons, calcIconUVs(newIdx,coord));
+        if (newIdx>=0.0)
+          newColor.w = 1.0 - newColor.w;
+        if (trans < 1.0) {
+          vec4 oldColor = oldIdx < 0.0 ? texture2D(face, coord) : texture2D(icons, calcIconUVs(oldIdx,coord));
+          if (oldIdx>=0.0)
+            oldColor.w = 1.0 - oldColor.w;
+          vFaceColor = mix(oldColor, newColor, trans);
+        } else {
+          vFaceColor = newColor;
+        }
         float a = 1.0 - pow(vFaceColor.w, 1.0/1.2);
+
+        float prox = 7.0-smoothstep(0.0, 20.0, distance(mouse,mid1))*6.0;
   
-        //fPos = lookAt(normalize(mid1-camPos), fPos);
-        fPos *= a*t;
+        //fPos = lookAt(normalize(mid1-cameraPosition), fPos);
+        fPos *= a*t*prox;
         fPos += mid1;
 
         return fPos;
@@ -340,6 +364,7 @@ export class WebGLSupport {
 
         let backgroundUniforms = {
             time : { type: "f", value: 0.0 },
+            mouse : {type: 'v3', value: new THREE.Vector3()}
         };
 
         let foregroundUniforms = {
@@ -348,7 +373,12 @@ export class WebGLSupport {
             icons: { type: 't', value: null },
             width : { type: "f", value: 68.0 },
             height : { type: "f", value: 70.0 },
-            size : { type: "f", value: 1.0 }
+            size : { type: "f", value: 1.0 },
+            transitionTime : { type: "f", value: 0 },
+            oldIdx : { type: "f", value: -1.0 },
+            newIdx : { type: "f", value: -1.0 },
+            mouse : {type: 'v3', value: new THREE.Vector3(),
+            }
         };
         let fp = createForegroundPolygons(foregroundUniforms);
         let bp = createBackgroundPolygons(backgroundUniforms);
@@ -427,8 +457,31 @@ export class WebGLSupport {
             }
         };
 */
+        let target = new THREE.Vector3();
+        let mouse = new THREE.Vector3();
+        window.onmousemove = function (ev) {
+            mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
+            mouse.y = -(ev.clientY / renderer.domElement.clientHeight) * 2 + 1;
+            mouse.z = 0.5;
+            mouse.unproject(camera);
+            let dir = mouse.sub( camera.position ).normalize();
+            let distance = - camera.position.z / dir.z;
+            target = camera.position.clone().add( dir.multiplyScalar( distance ) );
+        };
 
-
+        const hashes = {
+            aboutme: 1,
+            experience: 5,
+            projects: 3,
+            skills: 2,
+            portfolio: 4,
+            education:0
+        };
+        window.onhashchange = function (ev) {
+            foregroundUniforms.oldIdx.value = foregroundUniforms.newIdx.value ;
+            foregroundUniforms.newIdx.value = hashes[location.hash.substring(1, location.hash.length)];
+            foregroundUniforms.transitionTime.value = renderTime-timeLoaded;
+        };
         let controls = new OrbitControls.OrbitControls(camera);
         /*
         let control = {
@@ -458,7 +511,10 @@ export class WebGLSupport {
             renderTime = t;
             backgroundUniforms.time.value = t;
             foregroundUniforms.time.value = t-timeLoaded;
-
+            backgroundUniforms.mouse.value.copy(target);
+            foregroundUniforms.mouse.value.copy(target);
+            bp.worldToLocal(backgroundUniforms.mouse.value);
+            fp.worldToLocal(foregroundUniforms.mouse.value);
             renderer.render(scene, camera);
         };
         animate(0);
