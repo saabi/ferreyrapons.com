@@ -479,7 +479,10 @@ export class WebGLSupport {
         };
         window.onhashchange = function (ev) {
             foregroundUniforms.oldIdx.value = foregroundUniforms.newIdx.value ;
-            foregroundUniforms.newIdx.value = hashes[location.hash.substring(1, location.hash.length)];
+            if (location.hash === '')
+                foregroundUniforms.newIdx.value = -1
+            else
+                foregroundUniforms.newIdx.value = hashes[location.hash.substring(1, location.hash.length)];
             foregroundUniforms.transitionTime.value = renderTime-timeLoaded;
         };
         let controls = new OrbitControls.OrbitControls(camera);
