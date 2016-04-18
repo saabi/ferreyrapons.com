@@ -23,7 +23,7 @@ const backgroundPolygonShader = `
 
       float rand(vec2 co)
       {
-        return fract(sin(dot(co.xy,vec2(12.9898,78.233))) * 43758.5453);
+        return fract(sin(mod(dot(co.xy,vec2(12.9898,78.233)),3.1415)) * 43758.5453);
       }
 
       vec3 rotate(vec3 pos, float angle) {
@@ -119,7 +119,7 @@ const foregroundPolygonShader = `
 
       float rand(vec2 co)
       {
-        return fract(sin(dot(co.xy,vec2(12.9898,78.233))) * 43758.5453);
+        return fract(sin(mod(dot(co.xy,vec2(12.9898,78.233)),3.1415)) * 43758.5453);
       }
 
       vec3 rotate(vec3 pos, float angle) {
