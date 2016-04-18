@@ -488,23 +488,11 @@ export class WebGLSupport {
             'Animation': 5,
             'Books': 1
         };
-        */
-        /*
          let gui = new dat.GUI();
          gui.add(control, 'Animation', 0, 100).step(1);
          gui.add(control, 'Books', 1, books.length).step(1);
          */
-        /*
-        let letterCountTitle = document.createElement('p');
-        letterCountTitle.innerHTML = 'Look around by dragging, zoom with the mouse wheel<br><br>Letter count: ';
-        let s = letterCountTitle.style;
-        s.position = 'fixed';
-        s.left = s.top = '10px';
-        document.body.appendChild(letterCountTitle);
 
-        let letterCountElement = document.createElement('span');
-        letterCountTitle.appendChild(letterCountElement);
-        */
         let animate = function(t:number) {
             requestAnimationFrame(animate/*, renderer.domElement*/);
             t = t/1000;
