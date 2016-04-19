@@ -425,9 +425,6 @@ export class WebGLSupport {
             }
         }
 
-        //camera.position.y = 40;
-        //camera.lookAt(scene.position);
-
         function resize() {
             renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
