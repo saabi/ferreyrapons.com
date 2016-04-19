@@ -353,8 +353,9 @@ function createForegroundPolygons(uniforms) {
 export class WebGLSupport {
     constructor() {
         let renderer = new THREE.WebGLRenderer({antialias: true});
+        renderer.domElement.style.position = 'fixed';
         renderer.setClearColor( 0x000318 );
-        document.body.appendChild(renderer.domElement);
+        document.body.insertBefore(renderer.domElement, document.body.firstChild);
 
         let camera = new THREE.PerspectiveCamera(45,1,4,40000);
         camera.setLens(35);
