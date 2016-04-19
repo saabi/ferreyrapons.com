@@ -155,6 +155,12 @@ const foregroundPolygonShader = `
         iuv /= vec2(2.0,4.0);
         return iuv;
       }
+      vec4 color = vec4(177.0/255.0,126.0/255.0,44.0/255.0,1.0);
+      vec4 getIcon(float idx, vec2 coord) {
+        vec4 c = texture2D(icons, calcIconUVs(idx, coord))*color;
+        c.w = 1.0 - c.w;
+        return c;
+      }
 
       vec3 process(float idx, vec3 fPos) {
         float x0 = (rand(vec2(idx,4.0)))*width;
@@ -169,14 +175,11 @@ const foregroundPolygonShader = `
         coord /= vec2(width, height);
         coord += vec2(0.5, 0.5);
         coord += vec2(sin(time/1.6+coord.x*3.1415)/25.0,cos(time/2.0+coord.y*3.1415)/20.0);
-        
-        vec4 newColor = newIdx < 0.0 ? texture2D(face, coord) : texture2D(icons, calcIconUVs(newIdx,coord));
-        if (newIdx>=0.0)
-          newColor.w = 1.0 - newColor.w;
+
+        vec4 newColor, oldColor;
+        newColor = (newIdx>=0.0) ? getIcon(newIdx, coord) : texture2D(face, coord);
         if (trans < 1.0) {
-          vec4 oldColor = oldIdx < 0.0 ? texture2D(face, coord) : texture2D(icons, calcIconUVs(oldIdx,coord));
-          if (oldIdx>=0.0)
-            oldColor.w = 1.0 - oldColor.w;
+          oldColor = (oldIdx>=0.0) ? getIcon(oldIdx, coord) : texture2D(face, coord);
           vFaceColor = mix(oldColor, newColor, trans);
         } else {
           vFaceColor = newColor;
