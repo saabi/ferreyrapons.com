@@ -477,6 +477,7 @@ export class WebGLSupport {
 */
         let target = new THREE.Vector3();
         let mouse = new THREE.Vector3();
+
         window.onmousemove = function (ev) {
             mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
             mouse.y = -(ev.clientY / renderer.domElement.clientHeight) * 2 + 1;
@@ -492,7 +493,7 @@ export class WebGLSupport {
             foregroundUniforms.newIdx.value = getHashIdx();
             foregroundUniforms.transitionTime.value = renderTime-timeLoaded;
         };
-        let controls = new OrbitControls.OrbitControls(camera);
+        //let controls = new OrbitControls.OrbitControls(camera);
         /*
         let control = {
             'Animation': 5,
