@@ -366,6 +366,21 @@ export class WebGLSupport {
         camera.position.z = radius;
         scene.add(camera);
 
+        const hashes = {
+            aboutme: 1,
+            experience: 5,
+            projects: 3,
+            skills: 2,
+            portfolio: 4,
+            education:0
+        };
+        function getHashIdx() {
+            if (location.hash === '')
+                return -1;
+            else
+                return hashes[location.hash.substring(1, location.hash.length)];
+        }
+
         let backgroundUniforms = {
             time : { type: "f", value: 0.0 },
             mouse : {type: 'v3', value: new THREE.Vector3()}
@@ -379,8 +394,8 @@ export class WebGLSupport {
             height : { type: "f", value: 70.0 },
             size : { type: "f", value: 1.0 },
             transitionTime : { type: "f", value: 0 },
-            oldIdx : { type: "f", value: -1.0 },
-            newIdx : { type: "f", value: -1.0 },
+            oldIdx : { type: "f", value: getHashIdx() },
+            newIdx : { type: "f", value: getHashIdx() },
             mouse : {type: 'v3', value: new THREE.Vector3(),
             }
         };
@@ -475,20 +490,9 @@ export class WebGLSupport {
             target = camera.position.clone().add( dir.multiplyScalar( distance ) );
         };
 
-        const hashes = {
-            aboutme: 1,
-            experience: 5,
-            projects: 3,
-            skills: 2,
-            portfolio: 4,
-            education:0
-        };
         window.onhashchange = function (ev) {
             foregroundUniforms.oldIdx.value = foregroundUniforms.newIdx.value ;
-            if (location.hash === '')
-                foregroundUniforms.newIdx.value = -1
-            else
-                foregroundUniforms.newIdx.value = hashes[location.hash.substring(1, location.hash.length)];
+            foregroundUniforms.newIdx.value = getHashIdx();
             foregroundUniforms.transitionTime.value = renderTime-timeLoaded;
         };
         let controls = new OrbitControls.OrbitControls(camera);
