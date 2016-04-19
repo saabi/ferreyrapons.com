@@ -2,7 +2,7 @@
  * Created by ushi on 11/04/16.
  */
 import * as THREE from 'three';
-import * as OrbitControls from 'OrbitControls';
+//import * as OrbitControls from 'OrbitControls';
 
 const backgroundPolygonShader = `
       uniform float time;
@@ -409,7 +409,7 @@ export class WebGLSupport {
         //camera.position.y = 40;
         //camera.lookAt(scene.position);
 
-        window.onresize = function() {
+        function resize() {
             renderer.setSize(window.innerWidth, window.innerHeight);
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
@@ -420,7 +420,9 @@ export class WebGLSupport {
             fp.position.x = (height * camera.aspect - foregroundUniforms.width.value/2)*1.05;
             fp.position.y = 0;
         };
-        window.onresize(null);
+        window.addEventListener('resize', resize);
+
+        resize();
 
 /*
         let down = false;
