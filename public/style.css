@@ -66,7 +66,7 @@ body > header > h2 {
     float: left;
     margin: 0 0;
     padding: 1.5vh 0vh 0 0vh;
-    width: 16vh;
+    width: 18vh;
 }
 .content p {
     margin: 0;
@@ -74,7 +74,7 @@ body > header > h2 {
 }
 .content address {
     display: block;
-    margin-left: 18vh;
+    margin-left: 20vh;
     padding: 1.5vh 0;
 }
 #menu {
@@ -182,8 +182,8 @@ html.typo2 .content h4 {
     text-align: right;
 }
 html.typo2 .content p {
-    font-family: serif;
-    font-weight: 400;
+    font-weight: 200;
+    font-style: italic;
 }
 html.typo2 #menu a {
     text-decoration: none;
