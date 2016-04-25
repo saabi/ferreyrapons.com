@@ -4,6 +4,13 @@
 import * as THREE from 'three';
 //import * as OrbitControls from 'OrbitControls';
 
+function parseCssRgb(input:string) : number {
+    let m = input.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
+    if (m) {
+        return parseInt(m[1])*256*256+parseInt(m[2])*256+parseInt(m[3]);
+    }
+    return 0;
+}
 const backgroundPolygonShader = `
       uniform float time;
       uniform vec3 mouse;
@@ -354,7 +361,6 @@ export class WebGLSupport {
     constructor() {
         let renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.domElement.style.position = 'fixed';
-        renderer.setClearColor( 0x000318 );
         document.body.insertBefore(renderer.domElement, document.body.firstChild);
 
         let camera = new THREE.PerspectiveCamera(45,1,4,40000);
@@ -506,6 +512,9 @@ export class WebGLSupport {
 
         let animate = function(t:number) {
             requestAnimationFrame(animate/*, renderer.domElement*/);
+
+            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement)['background-color']) );
+
             t = t/1000;
             renderTime = t;
             backgroundUniforms.time.value = t;
