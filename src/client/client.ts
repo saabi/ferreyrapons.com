@@ -16,7 +16,7 @@ h2.style.fontSize = 0.95 * header.offsetWidth * h2fs + 'px';
 function resize() {
     h1.style.fontSize = 0.95 * header.offsetWidth * h1fs + 'px';
     h2.style.fontSize = 0.95 * header.offsetWidth * h2fs + 'px';
-    cv.style.top = header.offsetTop + header.offsetHeight + 32 + 'px';
+    cv.style.top = header.offsetTop + header.offsetHeight + 16 + 'px';
     cv.style.width = header.offsetWidth + 'px';
 }
 
