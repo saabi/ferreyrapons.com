@@ -1,16 +1,4 @@
 html {
-    font-family: sans-serif;
-    background: #000318;
-/*    background: linear-gradient(45deg, #807570 0%, #E0D0B5 100%);
-    background: linear-gradient(45deg, #403530 0%, #E0D0B5 100%);
-*/    color: white;
-    -webkit-transition: background-color 1s;
-    -moz-transition:    background-color 1s;
-    -ms-transition:     background-color 1s;
-    -o-transition:      background-color 1s;
-    transition:         background-color 1s;
-    perspective: 1000px;
-    perspective-origin: 50% 50%;
     width: 100%;
     height: 100%;
 }
@@ -21,8 +9,6 @@ body {
     width: 100%;
     height: 100%;
     margin: 0;
-    font-family: 'Ubuntu', sans-serif;
-    /*transform: translateZ(100px);*/
     overflow: hidden;
 }
 body > header {
@@ -30,20 +16,13 @@ body > header {
     width: calc(100% - 100vh);
     min-width: 500px;
     margin: 8vh 5vh;
-    text-align: center;
-    text-shadow: 2px 2px 8px black;
 }
 body > header > h1 {
-    font-weight: 500;
-    font-size: 30px;
     margin: 0;
     display: inline-block;
 }
 body > header > h2 {
-    font-weight: 300;
-    font-size: 20px;
     margin: 0;
-    color: #B17E2C;
     display: inline-block;
 }
 .print {
@@ -63,37 +42,28 @@ body > header > h2 {
     box-sizing: border-box;
     display:block;
     margin: 0;
-    background: rgba(255,255,255,0.75);
     border-radius: 6px;
     /*border: 10px solid #5A002D;*/
-    border: 10px solid #500000;
-    color:black;
+    border: 10px solid;
     width: 100%;
     overflow-y: auto;
 
     height: 0;
-    opacity: 0;
     transition: opacity 0.5s, height 0.5s;
 }
 .content:target {
-    opacity: 1;
     height: 100%;
 }
 .content h2 {
-    background: #000318;
-    color: white;
     margin: 0;
     padding: 1vh 2vh;
 }
 .content h3 {
-    background: #B17E2C;
-    color: black;
     margin: 0 0 1vh 0;
     padding: 0 3vh;
 }
 .content h4 {
     float: left;
-    text-align: right;
     margin: 0 0;
     padding: 0 3vh;
     width: 12vh;
@@ -110,15 +80,10 @@ body > header > h2 {
     padding: 0;
 }
 #menu a {
-    text-decoration: none;
-    text-align: center;
     vertical-align: top;
     display: inline-block;
     margin: auto;
     width: 16%;
-}
-#menu a:visited {
-    color: white;
 }
 #menu img {
     height: 48px;
@@ -127,17 +92,250 @@ body > header > h2 {
 #menu a:hover img {
     height: 64px;
 }
-
 #menu h3 {
     margin: 0;
     padding: 0;
-    color: white;
-    opacity: 0;
-    font-size: 12px;
     transition: color 0.5s, font-size 0.5s, opacity 0.5s;
 }
-#menu a:hover h3 {
-    color: #B17E2C;
-    opacity: 1;
+::-webkit-scrollbar
+{
+    width: 6px;  /* for vertical scrollbars */
+    height: 6px; /* for horizontal scrollbars */
+}
+
+::-webkit-scrollbar-track
+{
+    border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb
+{
+    border-radius: 3px;
+}
+
+/* typography */
+
+html.typo1 html {
+    font-family: 'Ubuntu', sans-serif;
+}
+html.typo1 body > header {
+    text-align: center;
+    text-shadow: 2px 2px 8px black;
+}
+html.typo1 body > header > h1 {
+    font-weight: 500;
+    font-size: 30px;
+}
+html.typo1 body > header > h2 {
+    font-weight: 300;
+    font-style: italic;
+    font-size: 20px;
+}
+html.typo1 .content h2 {
+}
+html.typo1 .content h3 {
+}
+html.typo1 .content h4 {
+    text-align: right;
+}
+html.typo1 .content p {
+    font-weight: 400;
+}
+html.typo1 #menu a {
+    text-decoration: none;
+    text-align: center;
+    vertical-align: top;
+}
+html.typo1 #menu h3 {
+    font-size: 12px;
+}
+html.typo1 #menu a:hover h3 {
     font-size: 16px;
 }
+
+/* typography 2 */
+
+html.typo2 {
+    font-family: 'Ubuntu', sans-serif;
+}
+html.typo2 body > header {
+    text-align: center;
+    text-shadow: 2px 2px 8px black;
+}
+html.typo2 body > header > h1 {
+    font-weight: 400;
+    font-size: 30px;
+}
+html.typo2 body > header > h2 {
+    font-weight: 200;
+    font-style: italic;
+    font-size: 20px;
+}
+html.typo2 .content h2 {
+    font-weight: 400;
+}
+html.typo2 .content h3 {
+    font-weight: 300;
+}
+html.typo2 .content h4 {
+    text-align: right;
+}
+html.typo2 .content p {
+    font-family: serif;
+    font-weight: 400;
+}
+html.typo2 #menu a {
+    text-decoration: none;
+    text-align: center;
+    vertical-align: top;
+}
+html.typo2 #menu h3 {
+    font-size: 12px;
+}
+html.typo2 #menu a:hover h3 {
+    font-size: 16px;
+}
+
+
+/* headers mod */
+html.headers .content h2 {
+    margin-bottom: 1vh;
+}
+html.headers .content h3 {
+    margin: 0 1vh;
+    padding: 0 3vh;
+    border-radius: 6px;
+}
+
+
+/* color scheme 1 */
+
+html.drk1 {
+    background: #000318;
+    color: white;
+}
+html.drk1 body > header > h2 {
+    color: #B17E2C;
+}
+html.drk1 .content {
+    background: rgba(255,255,255,0.75);
+    border: 10px solid #500000;
+    color:black;
+    opacity: 0;
+}
+html.drk1 .content:target {
+    opacity: 1;
+}
+html.drk1 .content h2 {
+    background: #171C44;
+    color: white;
+}
+html.drk1 .content h3 {
+    background: #C6933F;
+    color: black;
+}
+html.drk1 .content h4 {
+}
+html.drk1 .content p {
+}
+html.drk1 .content address {
+}
+html.drk1 #menu a:visited {
+    color: white;
+}
+html.drk1 #menu h3 {
+    color: white;
+    opacity: 0;
+}
+html.drk1 #menu a:hover h3 {
+    color: #B17E2C;
+    opacity: 1;
+}
+html.drk1 ::-webkit-scrollbar
+{
+    background: none;
+}
+
+html.drk1 ::-webkit-scrollbar-track
+{
+    background: rgba(0, 0, 0, 0.1);
+}
+
+html.drk1 ::-webkit-scrollbar-thumb
+{
+    background: rgba(0, 0, 0, 0.5);
+    border-radius: 3px;
+}
+
+html.drk1 ::-webkit-scrollbar-thumb:hover
+{
+    background: rgba(0, 0, 0, 0.75);
+}
+
+/* color scheme 2 */
+
+html.drk2 {
+    background: #000318;
+    color: white;
+}
+html.drk2 body > header > h2 {
+    color: #B17E2C;
+}
+html.drk2 .content {
+    background: rgba(40,40,40,0.75);
+    border-color: #500000;
+    color: #C7B9A2;
+    opacity: 0;
+}
+html.drk2 .content:target {
+    opacity: 1;
+}
+html.drk2 .content h2 {
+    background: #000318;
+    color: #9E6517;
+}
+html.drk2 .content h3 {
+    background: #C6933F;
+    color: black;
+}
+html.drk2 .content h4 {
+}
+html.drk2 .content p {
+}
+html.drk2 .content address {
+}
+html.drk2 #menu a:visited {
+    color: white;
+}
+html.drk2 .content a {
+    color: white;
+}
+html.drk2 #menu h3 {
+    color: white;
+    opacity: 0;
+}
+html.drk2 #menu a:hover h3 {
+    color: #B17E2C;
+    opacity: 1;
+}
+html.drk2 ::-webkit-scrollbar
+{
+    background: none;
+}
+
+html.drk2 ::-webkit-scrollbar-track
+{
+    background: none;
+}
+
+html.drk2 ::-webkit-scrollbar-thumb
+{
+    background: rgba(119, 80, 0, 0.67);
+    border-radius: 3px;
+}
+
+html.drk2 ::-webkit-scrollbar-thumb:hover
+{
+    background: rgba(119, 80, 0, 0.9);
+}
+
