@@ -453,9 +453,7 @@ module System {
             h2.style.fontSize = 0.95 * header.offsetWidth * h2fs + 'px';
         }
 
-        window.onresize = function () {  // se llama cuando cambia de tamaño el canvas
-            setTimeout(resize, 10);
-        }
+        window.addEventListener('resize', resize);
 
         resize();
 
