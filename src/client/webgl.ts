@@ -94,13 +94,14 @@ const backgroundPolygonShader = `
       }`;
 const backgroundFragmentShader = `
       uniform float time;
+      uniform vec4 color;
 
       varying float vIdx;
       varying float vT;
 
       void main() {
         float a = (1.0-vT)*0.5;
-        gl_FragColor = vec4(0.5,0.5,0.5,a);
+        gl_FragColor = color*vec4(1.0,1.0,1.0,a);
       }`;
 const foregroundPolygonShader = `
       uniform float time;
@@ -113,6 +114,7 @@ const foregroundPolygonShader = `
       uniform float transitionTime;
       uniform float oldIdx;
       uniform float newIdx;
+      uniform vec4 color;
 
       varying float vIdx;
       varying float vT;
@@ -162,7 +164,6 @@ const foregroundPolygonShader = `
         iuv /= vec2(2.0,4.0);
         return iuv;
       }
-      vec4 color = vec4(177.0/255.0,126.0/255.0,44.0/255.0,1.0);
       vec4 getIcon(float idx, vec2 coord) {
         vec4 c = texture2D(icons, calcIconUVs(idx, coord))*color;
         c.w = 1.0 - c.w;
@@ -389,7 +390,8 @@ export class WebGLSupport {
 
         let backgroundUniforms = {
             time : { type: "f", value: 0.0 },
-            mouse : {type: 'v3', value: new THREE.Vector3()}
+            mouse : {type: 'v3', value: new THREE.Vector3()},
+            color : {type: 'v4', value: new THREE.Vector4(0.5,0.5,0.5,1.0)}
         };
 
         let foregroundUniforms = {
@@ -402,8 +404,8 @@ export class WebGLSupport {
             transitionTime : { type: "f", value: 0 },
             oldIdx : { type: "f", value: getHashIdx() },
             newIdx : { type: "f", value: getHashIdx() },
-            mouse : {type: 'v3', value: new THREE.Vector3(),
-            }
+            mouse : {type: 'v3', value: new THREE.Vector3()},
+            color : {type: 'v4', value: new THREE.Vector4(177/255,126/255,44/255,1)}
         };
         let fp = createForegroundPolygons(foregroundUniforms);
         let bp = createBackgroundPolygons(backgroundUniforms);
