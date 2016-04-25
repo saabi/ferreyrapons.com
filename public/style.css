@@ -31,7 +31,7 @@ body > header > h2 {
 #cv {
     box-sizing: border-box;
     position: fixed;
-    top: 30vh;
+    top: 38vh;
     bottom: 5vh;
     left: 5vh;
     width: calc(100% - 100vh);
