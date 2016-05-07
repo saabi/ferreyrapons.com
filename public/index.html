@@ -252,18 +252,8 @@
     </section>
 
     <script src="js/components/requirejs/require.js"></script>
-    <script src="js/main.js"></script>
+    <script src="js/main-built.js"></script>
     <script>
-        require.config({
-            paths: {
-                "three": "/js/components/three.js/three"
-            },
-            shim: {
-                three: {
-                    exports: 'THREE'
-                }
-            }
-        });
         require(['client/client']);
     </script>
 

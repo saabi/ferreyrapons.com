@@ -20,7 +20,7 @@
     "Path2D.d.ts",
     "LoadMeter.ts",
     "main.ts",
-    "OrbitControls.ts",
+    /* "OrbitControls.ts", */
     "webgl.ts",
     "client.ts"
   ]
