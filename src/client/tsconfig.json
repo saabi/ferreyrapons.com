@@ -6,10 +6,12 @@
     "outFile": "../../public/js/main.js",
     "pretty": true,
     "noImplicitAny": true,
+    "noImplicitReturns": true,
     "removeComments": true,
     "preserveConstEnums": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "noFallthroughCasesInSwitch": true,
     "sourceMap": true
   },
   "files": [
