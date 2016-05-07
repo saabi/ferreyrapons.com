@@ -378,7 +378,7 @@ export class WebGLSupport {
             experience: 5,
             projects: 3,
             skills: 2,
-            portfolio: 4,
+            blog: 4,
             education:0
         };
         function getHashIdx() {
