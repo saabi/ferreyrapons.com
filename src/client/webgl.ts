@@ -441,7 +441,7 @@ export class WebGLSupport {
             let height = (camera.fov*Math.PI/180)*radius/2;
             bp.position.x = -height*1.2 * camera.aspect;
             bp.position.y = -height*1.2;
-            fp.position.x = (height * camera.aspect - foregroundUniforms.width.value/2)*1.05;
+            fp.position.x = (height * camera.aspect - foregroundUniforms.width.value/2)*1.1;
             fp.position.y = 0;
         };
         window.addEventListener('resize', resize);
