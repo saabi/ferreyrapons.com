@@ -61,6 +61,7 @@ body > header > h2 {
 .content h3 {
     margin: 0 0 1vh 0;
     padding: 0 3vh;
+    clear: both;
 }
 .content h4 {
     float: left;
@@ -79,6 +80,8 @@ body > header > h2 {
 }
 .content  img {
     vertical-align: top;
+    display: block;
+    float: left;
 }
 #menu {
     padding: 0;
