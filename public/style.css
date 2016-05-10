@@ -77,6 +77,9 @@ body > header > h2 {
     margin-left: 20vh;
     padding: 1.5vh 0;
 }
+.content  img {
+    vertical-align: top;
+}
 #menu {
     padding: 0;
 }
