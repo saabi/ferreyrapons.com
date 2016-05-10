@@ -2,7 +2,7 @@
   "compilerOptions": {
     "target": "ES5",
     "module": "amd",
-    "allowJs": true,
+    /* "allowJs": true, */  
     "outFile": "../../public/js/main.js",
     "pretty": true,
     "noImplicitAny": true,
