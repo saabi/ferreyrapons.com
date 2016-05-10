@@ -376,7 +376,7 @@ export class WebGLSupport {
         const hashes = {
             aboutme: 1,
             experience: 5,
-            projects: 3,
+            lab: 3,
             skills: 2,
             blog: 4,
             education:0
