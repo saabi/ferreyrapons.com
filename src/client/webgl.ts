@@ -448,41 +448,6 @@ export class WebGLSupport {
 
         resize();
 
-/*
-        let down = false;
-        let sx = 0, sy = 0;
-        window.onmousedown = function (ev){
-            if (ev.target == renderer.domElement) {
-                down = true;
-                sx = ev.clientX;
-                sy = ev.clientY;
-            }
-        };
-        let wheelHandler = function(ev:WheelEvent) {
-            let ds = (ev.detail < 0 || ev.wheelDelta > 0) ? (1/1.25) : 1.25;
-            let fov = camera.fov * ds;
-            fov = Math.min(120, Math.max(1, fov));
-            camera.fov = fov;
-            camera.updateProjectionMatrix();
-            ev.preventDefault();
-        };
-        window.addEventListener('DOMMouseScroll', wheelHandler, false);
-        window.addEventListener('mousewheel', wheelHandler, false);
-        window.onmouseup = function(){ down = false; };
-        window.onmousemove = function(ev) {
-            if (down) {
-                let dx = ev.clientX - sx;
-                let dy = ev.clientY - sy;
-                //camera.rotation.y += dx/500 * (camera.fov/45);
-                //camera.rotation.x += dy/500 * (camera.fov/45);
-                camera.position.y = 40;
-                camera.lookAt(scene.position);
-                //camera.
-                sx += dx;
-                sy += dy;
-            }
-        };
-*/
         let target = new THREE.Vector3();
         let mouse = new THREE.Vector3();
 
@@ -501,16 +466,6 @@ export class WebGLSupport {
             foregroundUniforms.newIdx.value = getHashIdx();
             foregroundUniforms.transitionTime.value = renderTime-timeLoaded;
         };
-        //let controls = new OrbitControls.OrbitControls(camera);
-        /*
-        let control = {
-            'Animation': 5,
-            'Books': 1
-        };
-         let gui = new dat.GUI();
-         gui.add(control, 'Animation', 0, 100).step(1);
-         gui.add(control, 'Books', 1, books.length).step(1);
-         */
 
         let animate = function(t:number) {
             requestAnimationFrame(animate/*, renderer.domElement*/);
