@@ -254,7 +254,9 @@
     <script src="js/components/requirejs/require.js"></script>
     <script src="js/main-built.js"></script>
     <script>
-        require(['client/client']);
+        window.addEventListener("load", function() {
+            require(['client/client']);
+        });
     </script>
 
 </body>
