@@ -1,6 +1,6 @@
 {
   "name": "ferreyrapons.com",
-  "version": "0.0.1",
+  "version": "0.1.0",
   "description": "Sebastian Ferreyra Professional CV & Site",
   "main": "server.js",
   "scripts": {
