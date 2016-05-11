@@ -283,6 +283,12 @@
 
         ga('create', 'UA-77526036-1', 'auto');
         ga('send', 'pageview');
+
+        window.addEventListener('hashchange', function() {
+            ga('send', 'pageview', {
+                'page': location.pathname + location.search  + location.hash
+            });
+        });
     </script>
 </body>
 
