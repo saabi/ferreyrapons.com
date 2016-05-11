@@ -461,11 +461,11 @@ export class WebGLSupport {
             target = camera.position.clone().add( dir.multiplyScalar( distance ) );
         };
 
-        window.onhashchange = function (ev) {
+        window.addEventListener('hashchange', function (ev) {
             foregroundUniforms.oldIdx.value = foregroundUniforms.newIdx.value ;
             foregroundUniforms.newIdx.value = getHashIdx();
             foregroundUniforms.transitionTime.value = renderTime-timeLoaded;
-        };
+        });
 
         let animate = function(t:number) {
             requestAnimationFrame(animate/*, renderer.domElement*/);
