@@ -6,6 +6,6 @@
   "ambientDependencies": {
     "koa": "registry:dt/koa#2.0.0+20160317120654",
     "node": "registry:dt/node#4.0.0+20160319033040",
-    "three": "registry:dt/three#0.0.0+20160405161802"
+    "three": "registry:dt/three#0.0.0+20160501153841"
   }
 }
