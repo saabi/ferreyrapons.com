@@ -1,0 +1,49 @@
+html {
+    font-family: sans-serif;
+    background: #000318;
+    width: 100%;
+    height: 100%;
+}
+body {
+    position: absolute;
+    top:0;
+    left:0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    font-family: 'Ubuntu', sans-serif;
+    /*transform: translateZ(100px);*/
+    overflow: hidden;
+}
+header {
+    position: absolute;
+    width: calc(100% - 100vh);
+    min-width: 500px;
+    margin: 8vh 5vh;
+    text-align: center;
+    text-shadow: 2px 2px 8px black;
+}
+h1 {
+    font-weight: 500;
+    font-size: 30px;
+    margin: 0;
+    display: inline-block;
+}
+body > header > h2 {
+    font-weight: 300;
+    font-size: 20px;
+    margin: 0;
+    color: #B17E2C;
+    display: inline-block;
+}
+
+#particles,#speed {
+    position: absolute;
+    height: 100%;
+    top: 0;
+    right: 0;
+}
+#particles {
+    width: 100%;
+    z-index: -1;
+}
