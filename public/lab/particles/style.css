@@ -31,6 +31,11 @@ html, body {
 #help:hover .content {
     display:block;
 }
+#help a {
+    color:white;
+    text-decoration: none;
+    font-weight: bold;
+}
 header {
     position: absolute;
     width: calc(100% - 100vh);
