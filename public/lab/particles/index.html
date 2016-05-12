@@ -3,12 +3,22 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>GPU Stateless Particles Demo</title>
+    <title>Stateless GPU Particles Demo</title>
     <link rel="stylesheet" type='text/css' href="style.css" media="screen">
 </head>
 
 <body>
 
+    <section id="help">
+        <h1>HELP</h1>
+        <section class="content">
+            <p>Drag mouse to orbit camera, use arrow keys to move orbit center.</p>
+            <p>Change the parameters on the right for some fun.</p>
+            <p>Be mindful of your hardware when choosing how many particles to generate.
+                It could take a while to create them if your hardware is not top notch.
+                My advice is to start at around 30K and increase the quantity progressively.</p>
+        </section>
+    </section>
 
     <script src="/js/components/requirejs/require.js"></script>
     <script src="js/main-built.js"></script>
