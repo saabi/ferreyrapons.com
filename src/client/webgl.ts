@@ -314,7 +314,7 @@ function createPolygons (amount:number, sides: number, uniforms: any) {
     return geo;
 }
 
-function createBackgroundPolygons(uniforms) {
+function createBackgroundPolygons(uniforms:any) {
     let geo = createPolygons(150, 5, uniforms);
 
     let shaderMaterial = new THREE.ShaderMaterial({
@@ -337,7 +337,7 @@ function createBackgroundPolygons(uniforms) {
     return top;
 }
 
-function createForegroundPolygons(uniforms) {
+function createForegroundPolygons(uniforms:any) {
     let geo = createPolygons(5000, 4, uniforms);
     let shaderMaterial = new THREE.ShaderMaterial({
         uniforms : uniforms,
@@ -374,7 +374,7 @@ export class WebGLSupport {
         camera.position.z = radius;
         scene.add(camera);
 
-        const hashes = {
+        const hashes: {[hash:string]:number;} = {
             aboutme: 1,
             experience: 5,
             lab: 3,
@@ -389,13 +389,13 @@ export class WebGLSupport {
                 return hashes[location.hash.substring(1, location.hash.length)];
         }
 
-        let backgroundUniforms = {
+        let backgroundUniforms:any = {
             time : { type: "f", value: 0.0 },
             mouse : {type: 'v3', value: new THREE.Vector3()},
             color : {type: 'v4', value: new THREE.Vector4(0.5,0.5,0.5,1.0)}
         };
 
-        let foregroundUniforms = {
+        let foregroundUniforms:any = {
             time : { type: "f", value: 0.0 },
             face: { type: 't', value: null },
             icons: { type: 't', value: null },
@@ -413,7 +413,7 @@ export class WebGLSupport {
 
         scene.add(bp);
 
-        let loader = new THREE.TextureLoader()
+        let loader = new THREE.TextureLoader();
         let loaded = 0;
         let renderTime = 0;
         let timeLoaded = 0;
@@ -471,7 +471,7 @@ export class WebGLSupport {
         let animate = function(t:number) {
             requestAnimationFrame(animate/*, renderer.domElement*/);
 
-            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement)['background-color']) );
+            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement).backgroundColor) );
 
             t = t/1000;
             renderTime = t;
