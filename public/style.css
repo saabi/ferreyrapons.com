@@ -16,6 +16,7 @@ body > header {
     width: calc(100% - 100vh);
     min-width: 500px;
     margin: 8vh 5vh;
+    transition: 0.5s width;
 }
 body > header > h1 {
     margin: 0;
@@ -131,12 +132,12 @@ html.typo1 body > header {
 }
 html.typo1 body > header > h1 {
     font-weight: 500;
-    font-size: 30px;
+    font-size: 42.9px;
 }
 html.typo1 body > header > h2 {
     font-weight: 300;
     font-style: italic;
-    font-size: 20px;
+    font-size: 21.7px;
 }
 html.typo1 .content h2 {
 }
@@ -171,12 +172,18 @@ html.typo2 body > header {
 }
 html.typo2 body > header > h1 {
     font-weight: 400;
-    font-size: 57.6px;
+    font-size: 42.9px;
+    transition: 0.25s font-size;
+    word-break: keep-all;
+    line-break: strict;
 }
 html.typo2 body > header > h2 {
     font-weight: 200;
     font-style: italic;
-    font-size: 29.7px;
+    font-size: 21.7px;
+    transition: 0.25s font-size;
+    word-break: keep-all;
+    line-break: strict;
 }
 html.typo2 .content h2 {
     font-weight: 400;
