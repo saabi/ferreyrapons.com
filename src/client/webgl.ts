@@ -362,6 +362,7 @@ export class WebGLSupport {
     constructor() {
         let renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.domElement.style.position = 'fixed';
+        renderer.domElement.classList.add('screen');
         document.body.insertBefore(renderer.domElement, document.body.firstChild);
 
         let camera = new THREE.PerspectiveCamera(45,1,4,40000);
