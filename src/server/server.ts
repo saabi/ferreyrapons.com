@@ -5,12 +5,14 @@ import * as Koa from "koa";
 const fileServer = require('koa-static');
 const convert = require('koa-convert')
 const mount = require('koa-mount');
+const trailingSlashEnforcer = require('koa-add-trailing-slashes')();
 
 //import {TestClass} from "../common/test";
 //let test = new TestClass();
 
 let app = new Koa();
 
+app.use(trailingSlashEnforcer);
 app.use(convert(mount('/src', fileServer('src'))));
 app.use(convert(fileServer('public')));
 
