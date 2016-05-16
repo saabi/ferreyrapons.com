@@ -483,6 +483,6 @@ export class WebGLSupport {
             fp.worldToLocal(foregroundUniforms.mouse.value);
             renderer.render(scene, camera);
         };
-        //animate(0);
+        animate(0);
     };
 }
