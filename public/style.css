@@ -16,7 +16,7 @@ body > header {
     width: calc(100% - 100vh);
     min-width: 500px;
     margin: 8vh 5vh;
-    transition: 0.5s width;
+    /* transition: 0.5s width; */
     overflow: hidden;
 }
 body > header > h1 {
@@ -174,7 +174,7 @@ html.typo2 body > header {
 html.typo2 body > header > h1 {
     font-weight: 400;
     font-size: 42.9px;
-    transition: 0.25s font-size;
+    /* transition: 0.25s font-size; */
     word-break: keep-all;
     line-break: strict;
 }
@@ -182,7 +182,7 @@ html.typo2 body > header > h2 {
     font-weight: 200;
     font-style: italic;
     font-size: 21.7px;
-    transition: 0.25s font-size;
+    /* transition: 0.25s font-size; */
     word-break: keep-all;
     line-break: strict;
 }
