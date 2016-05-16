@@ -1,0 +1,318 @@
+<!doctype html>
+<html>
+	<head>
+		<title>Jueguito</title>
+		<style>html,body {margin:0; padding:0;overflow:hidden;}#resources {display:none;}</style>
+		<meta charset="utf-8" />
+		<script src="js/prototype-1.6.0.2.js"></script>
+
+    <script src='js/box2Dweb.js'></script>
+    <script src='js/draw_world.js'></script>
+    <script src='js/juego.js'></script>
+    <script src='js/spu.js'></script>
+<script>
+level1 = function(w)
+{
+  var points1 = '-6.479 112.653 -11.354 107.223 -13.333 102.97 -15.116 103.824 -17.759 103.115 -24.149 107.035 -26.204 102.457 -31.648 104.726 -31.987 99.134 -36.751 102.079 -37.654 93.964 -47.855 102.707 -46.702 88.429 -46.831 88.407 -49.794 87.059 -53.31 87.329 -56.462 86.135 -57.032 86.136 -62.429 92.471 -65.587 89.247 -71.005 94.142 -73.321 86.552 -77.347 90.615 -87.022 86.924 -86.683 79.625 -88.366 76.365 -88.042 75.091 -92.077 74.549 -93.262 67.619 -92.737 64.667 -94.815 61.911 -94.491 60.645 -97.782 60.491 -103.485 54.542 -99.837 49.104 -100.589 47.515 -100.542 44.897 -101.151 44.282 -105.644 42.356 -107.512 39.066 -111.729 35.401 -109.264 29.001 -108.736 25.991 -108.13 24.052 -109.111 21.65 -109.276 18.003 -109.438 16.252 -114.183 10.424 -109.275 7.695 -109.556 7.434 -110.47 1.081 -106.778 -3.687 -104.782 -4.643 -105.326 -7.628 -101.778 -9.824 -109.231 -17.614 -101.434 -19.217 -102.034 -24.711 -98.187 -28.814 -96.649 -30.116 -96.946 -32.251 -96.116 -33.999 -97.495 -35.849 -99.785 -40.661 -98.927 -46.188 -96.339 -48.732 -95.888 -53.335 -89.484 -54.061 -88.803 -54.033 -87 -58.737 -81.823 -58.203 -80.445 -58.914 -78.464 -60.432 -74.438 -64.937 -71.305 -63.558 -69.194 -67.133 -64.106 -64.753 -63.694 -64.905 -61.766 -66.999 -58.734 -68.505 -57.229 -70.029 -56.41 -71.097 -56.468 -73.325 -58.448 -83.567 -54.743 -82.759 -57.163 -86.563 -49.332 -86.767 -50.345 -95.438 -44.858 -95.234 -45.916 -97.866 -40.177 -100.157 -39.76 -101.515 -38.368 -105.184 -36.074 -108.233 -33.561 -111.304 -28.257 -112.653 -24.5 -111.902 -18.646 -111.593 -16.612 -105.064 -15.308 -102.288 -14.201 -100.899 -4.446 -106.922 -4.644 -98.527 -2.966 -99.125 -2.481 -98.425 -1.397 -100.441 4.786 -97.937 6.319 -97.865 6.702 -98.019 9.942 -105.351 15.938 -100.558 17.771 -102.23 20.212 -104.663 30.054 -112.215 33.054 -98.435 38.231 -98.551 36.056 -90.333 36.956 -88.206 37.14 -87.213 41.231 -86.527 43.093 -83.049 47.134 -80.918 47.153 -80.946 55.276 -79.387 55.731 -77.044 57.792 -79.234 63.212 -71.406 64.659 -72.134 70.604 -71.672 73.333 -67.685 75.253 -65.377 80.519 -59.94 77.47 -57.296 82.585 -55.276 77.14 -50.849 78.356 -50.334 77.995 -46.163 78.177 -46.231 82.821 -44.563 87.819 -41.568 87.642 -36.012 90.79 -36.121 90.819 -36.112 96.563 -34.36 96.886 -33.102 100.69 -35.489 104.075 -30.45 111.437 -27.708 105.688 -21.626 111.552 -18.073 110.173 -12.037 109.005 -7.868 106.776 -5.539 108.644 -4.521 108.495 4.407 106.964 5.585 107.337 5.858 110.278 12.87 106.185 15.835 114.183 19.786 107.065 26.597 111.735 30.901 106.249 36.814 103.267 39.527 103.134 39.602 104.575 42.077 104.456 50.912 96.612 50.449 96.606 51.019 93.595 55.238 91.13 56.975 90.567 61.827 86.44 67.16 82.251 66.496 79.106 68.938 75.241 66.642 74.626 67.492 70.503 68.609 67.185 69.77 65.396 69.744 64.114 72.47 62.794 72.907 65.083 84.407 53.491 79.214 52.915 79.29 51.505 81.285 50.216 81.981 51.042 94.818 41.923 89.013 41.495 89.258 36.71 93.146 31.341 89.393 31.28 89.38 28.347 92.882 22.813 90.313 21.028 90.133 19.769 90.75 18.601 92.649 16.382 96.441 11.769 99.371 8.796 99.246 10.579 108.292 2.302 109.122 -0.679 109.273';
+  var s = $spu.create();
+  $spu.load(s, $ppu.read(points1));
+  s.polys[0] = s.polys[0].reverse();
+  $spu.scale(s, 3.5, -3.5);
+  var bb = $spu.boundingBox(s);
+  $spu.translate(s, -bb.x-bb.width/2, -bb.y-bb.height/2);
+  $spu.clean(s,10);
+  var poly = s.polys[0];
+  $spu.part(s, 8, -32);
+  $spu.scale(s,5,5);
+  s.polys.pop();
+  var map = $spu.toPolys(s);
+    
+  var shapes1 = game.createBody(w, 0, 0, map.slice(0,64), true).GetFixtureList();
+  var shapes2 = game.createBody(w, 0, 0, map.slice(64), true).GetFixtureList();
+  var alt = false;
+  var p1 = function (c)
+      {
+      drawFixture(this, c);
+      c.fillStyle = rockPat;
+      c.fill();
+
+      c.fillStyle = 'rgba(64,32,0,.5)';
+      c.fill();
+      //c.stroke();
+      };
+  var p2 = function (c)
+      {
+      drawFixture(this, c);
+      c.fillStyle = rockPat;
+      c.fill();
+      //c.stroke();
+      };
+  while (shapes1)
+    {
+    alt = !alt;
+    shapes1.paint = alt?p1:p2;
+    shapes1 = shapes1.GetNext();
+    }
+  while (shapes2)
+    {
+    alt = !alt;
+    shapes2.paint = alt?p1:p2;
+    shapes2 = shapes2.GetNext();
+    }
+  s.polys = poly;
+  
+  for ( var i = 0; i<poly.length; i++)
+    {
+    //var 
+    var vi = s.vertices[poly[i]];
+    var v0 = s.vertices[poly[(i+poly.length-1)%poly.length]];
+    var v2 = s.vertices[poly[(i+1)%poly.length]];
+    var x1 = vi[0];
+    var y1 = vi[1];
+    var grassFixtures = game.createProp(w,x1,y1).GetFixtureList();
+    grassFixtures.x1 = x1;
+    grassFixtures.y1 = y1;
+    grassFixtures.bis1 = $vpu.bisect(v0,vi,v2,$vpu.isLeftTurn(v0,vi,v2)?-10:10);
+    grassFixtures.bis1 = [grassFixtures.bis1[0]-x1, grassFixtures.bis1[1]-y1];
+    grassFixtures.bis2 = [v2[0]-x1, v2[1]-y1];
+
+    //shapes3.bis = [0.5,1];
+    while (grassFixtures)
+      {
+      grassFixtures.paint = function(c)
+        {
+        //drawFixture(this, c);
+            //return;
+        c.save();
+        var x = this.x1;
+        var y = this.y1;
+        var xb = this.bis1[0];
+        var yb = -this.bis1[1];
+        var m = Math.sqrt(xb*xb+yb*yb);
+        //centerTransform(this.x1, this.y1);
+        c.translate(x, y);
+        c.save();
+        c.transform(yb/m,xb/m,-xb/m, yb/m,0,0);
+        //var cp =
+        c.drawImage(corner,-6,-3, 12, 12);
+        c.restore();
+        xb = this.bis2[0];
+        yb = this.bis2[1];
+        m = Math.sqrt(xb*xb+yb*yb);
+        c.transform(xb/m,yb/m,-yb/m, xb/m,0,0);
+        //var cp =
+        c.drawImage(border,0,-3, m, 12);
+        
+        c.restore();
+        };
+      grassFixtures = grassFixtures.GetNext();
+      }
+    }
+/*
+  for ( var i = 0; i<poly.length; i++)
+    {
+    //var 
+    var vi = s.vertices[poly[i]];
+    var v0 = s.vertices[poly[(i+poly.length-1)%poly.length]];
+    var v2 = s.vertices[poly[(i+1)%poly.length]];
+    var x1 = vi[0];
+    var y1 = vi[1];
+    var shapes3 = game.createProp(w,x1,y1).GetShapeList();
+    shapes3.x1 = x1;
+    shapes3.y1 = y1;
+    shapes3.bis1 = $vpu.bisect(v0,vi,v2,$vpu.isLeftTurn(v0,vi,v2)?-10:10);
+    shapes3.bis1 = [shapes3.bis1[0]-x1, shapes3.bis1[1]-y1];
+    //shapes3.bis = [0.5,1];
+    while (shapes3)
+      {
+      shapes3.paint = function(c)
+        {
+        c.save();
+        var x = this.x1;
+        var y = this.y1;
+        var xb = this.bis1[0];
+        var yb = -this.bis1[1];
+        var m = Math.sqrt(xb*xb+yb*yb);
+        //centerTransform(this.x1, this.y1);
+        c.translate(x, y);
+        c.transform(yb/m,xb/m,-xb/m, yb/m,0,0);
+        //var cp =
+        c.drawImage(border,-6,-6, 12, 12);
+        c.restore();
+        };
+      shapes3 = shapes3.GetNext();
+      }
+    }
+*/nubfac = 400;
+  nubes = 
+    [
+    {width:120, height:80, rot:0, alt:1850, dir:0.2/nubfac, img:cloud1, alfa:.75},
+    {width:160, height:130, rot:60, alt:1930, dir:-0.25/nubfac, img:cloud5, alfa:.8},
+    {width:190, height:100, rot:120, alt:2040, dir:0.15/nubfac, img:cloud4, alfa:.85},
+    {width:160, height:100, rot:180, alt:1920, dir:0.05/nubfac, img:cloud2, alfa:.9},
+    {width:200, height:200, rot:270, alt:2100, dir:0.025/nubfac, img:cloud3, alfa:.95}
+    ]
+  sky = [];
+  for ( var i = 0; i<1000; i++ )
+    sky.push({img:Math.random()*8, x:Math.random()*6000-3000, y:Math.random()*6000-4000, size:Math.random()*10+15});
+  game.createShip(w, 1*scale, 2001*scale);
+  }
+
+Event.observe(window, 'load', function()
+  {
+  star = $('star');
+  ship1 = $('ship1');
+  ship1Burnt = $('ship1burnt');
+  rock1 = $('rock');
+  border = $('border');
+  corner = $('corner');
+  cloud1 = $('cloud1');
+  cloud2 = $('cloud2');
+  cloud3 = $('cloud3');
+  cloud4 = $('cloud4');
+  cloud5 = $('cloud5');
+  starsCol = $('starsCol');
+  ouch = $('ouch');
+
+  game.createWorld(level1, 5000);
+  game.canvas = $('c');
+  game.canvas.width = game.canvas.clientWidth;
+  game.canvas.height = game.canvas.clientHeight;
+  game.ctx = game.canvas.getContext('2d');
+  game.ctx.scale(1,-1);
+  game.ctx.translate(0,-480);
+  game.canvasWidth = parseInt(game.canvas.width);
+  game.canvasHeight = parseInt(game.canvas.height);
+  game.canvasTop = parseInt(game.canvas.style.top);
+  game.canvasLeft = parseInt(game.canvas.style.left);
+
+        var b2DebugDraw = Box2D.Dynamics.b2DebugDraw;
+  var debugDraw = new b2DebugDraw();
+  debugDraw.SetSprite(game.ctx);
+  debugDraw.SetDrawScale(1);
+  debugDraw.SetFillAlpha(0.3);
+  debugDraw.SetLineThickness(1.0);
+  debugDraw.SetFlags(255);
+  game.world.SetDebugDraw(debugDraw);
+  game.goodGraphics = true;
+  game.debugGraphics = false;
+
+  rockPat = game.ctx.createPattern(rock1, 'repeat');
+  
+  chorro = false;
+  document.onkeydown = function(e)
+    {
+    var k=e.keyCode;
+    if (k==37 )
+      {
+      rot = -1;
+      Event.cancel = true;
+      }
+    if (k==39 )
+      {
+      rot = 1;
+      Event.cancel = true;
+      }
+    if (k==38 /*&& s.f>0*/)
+      {
+      chorro = true;
+      Event.cancel = true;
+      }
+    if (k==38 /*&& s.f>0*/)
+      {
+      chorro = true;
+      Event.cancel = true;
+      }
+    if (k==49 /*&& s.f>0*/)
+      {
+      game.goodGraphics = !game.goodGraphics;
+      Event.cancel = true;
+      }
+    if (k==50 /*&& s.f>0*/)
+      {
+      game.debugGraphics = !game.debugGraphics;
+      Event.cancel = true;
+      }
+      /*
+    if (!w.gameOver && k==80)
+      {
+      w.paused = !w.paused;
+      event.cancel = true;
+      }*/
+    if (Event.cancel)
+      {
+      Event.cancelBubble = true
+      return false;
+      }
+    }
+  document.onkeyup = function (e)
+    {
+    var k=e.keyCode;
+    if (k==38)
+      {
+      chorro = false;
+      Event.cancel = true;
+      }
+    if (k==37 || k==39)
+      {
+      rot = 0;
+      Event.cancel = true;
+      }
+    if (Event.cancel)
+      {
+      Event.cancel = false;
+      Event.cancelBubble=true
+      return false;
+      }
+    }
+  document.onmousemove = function (e)
+  {
+  var mx = e.clientX, my = e.clientY;
+  var s = game.playerShip;
+  var cp = s.GetLocalCenter();
+  var lv = s.GetLinearVelocity();
+  var z = (cp.x * cp.x + cp.y * cp.y);
+  var m = Math.sqrt(z);
+  var ss = cp.x / m;
+  var cs = cp.y / m;
+  z = 2200 * 2200 / z;
+  if (z > 4)
+      z = 4;
+
+  var a = z * cs;
+  var b = -z * ss;
+  var e = game.canvas.width / 2;
+  var f = game.canvas.height / 2 + m * z * 0.95;
+  var mxx = mx * a + my * b + e;
+  var mxy = mx * b - my * a + f;
+  //var aabb = new b2AABB();
+  $('consola').innerHTML = mxx + ", " + mxy;
+  }
+
+  game.step();
+  });
+
+</script>
+	</head>
+	<body>
+		<canvas id="c" style="background:black;width:100%; height:100%; position: absolute;" ></canvas>
+    <div id='resources'>
+		<div id='consola' style='position:absolute; left:640px; top:0; width:480px; background:black; color:#44FF00;'><p>Hola.</p></div>
+    <img id='star' src='img/star-s.png'>
+    <img id='ship1' src='img/ship1.png'>
+    <img id='ship1burnt' src='img/ship1-burnt.png'>
+    <img id='rock' src='img/rocks.jpg'>
+    <img id='border' src='img/grass.png'>
+    <img id='corner' src='img/grass-corner.png'>
+    <img id='cloud1' src='img/cloud1s.png'>
+    <img id='cloud2' src='img/cloud2s.png'>
+    <img id='cloud3' src='img/cloud3s.png'>
+    <img id='cloud4' src='img/cloud4s.png'>
+    <img id='cloud5' src='img/cloud5s.png'>
+    <img id='starsCol' src='img/stars-s.png'>
+    <img id='ouch' src='img/ouch.png'>
+
+    <div id='xy' style='position:absolute; top:0; right:0; color:green;'></div>
+    </div>
+	</body>
+</html>
