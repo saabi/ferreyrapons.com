@@ -17,6 +17,7 @@ body > header {
     min-width: 500px;
     margin: 8vh 5vh;
     transition: 0.5s width;
+    overflow: hidden;
 }
 body > header > h1 {
     margin: 0;
