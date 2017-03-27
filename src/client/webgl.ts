@@ -59,7 +59,7 @@ const backgroundPolygonShader = `
         float vx = rand(vec2(idx, 0.0))*0.1;
         float vy = rand(vec2(idx, 1.0))*0.1;
         float life = rand(vec2(idx, 2.0))*10.0;
-        float size = rand(vec2(idx, 5.0))*10.0;
+        float size = rand(vec2(idx, 5.0))*20.0;
         float timeOffset = rand(vec2(idx,3.0))*10.0;
         float t = mod(time+timeOffset, life);
         float t2 = clamp((time-timeOffset)/10.0,0.0,1.0);
@@ -98,10 +98,14 @@ const backgroundFragmentShader = `
 
       varying float vIdx;
       varying float vT;
-
+      varying vec2 vUv;
+      
       void main() {
         float a = (1.0-vT)*0.5;
-        gl_FragColor = color*vec4(1.0,1.0,1.0,a);
+        vec2 uv = vUv*2.0-1.0;
+        a *= 1.0-length(uv);
+        //gl_FragColor = color*vec4(1.0,1.0,1.0,a);
+        gl_FragColor = color*vec4(vUv.s,vUv.t,1.0,a);
       }`;
 const foregroundPolygonShader = `
       uniform float time;
@@ -315,7 +319,7 @@ function createPolygons (amount:number, sides: number, uniforms: any) {
 }
 
 function createBackgroundPolygons(uniforms:any) {
-    let geo = createPolygons(150, 5, uniforms);
+    let geo = createPolygons(150, 4, uniforms);
 
     let shaderMaterial = new THREE.ShaderMaterial({
         uniforms : uniforms,
