@@ -330,6 +330,8 @@ function createBackgroundPolygons(uniforms:any) {
     shaderMaterial.opacity = 0.5;
     shaderMaterial.depthTest = false;
     shaderMaterial.side = THREE.DoubleSide;
+    shaderMaterial.blending = THREE.CustomBlending;
+    shaderMaterial.blendDst = THREE.OneFactor;
 
     let polygons = new THREE.Mesh(
         geo,
@@ -367,16 +369,84 @@ export class WebGLSupport {
         let renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.domElement.style.position = 'fixed';
         renderer.domElement.classList.add('screen');
+        renderer.autoClear = false;
+
         document.body.insertBefore(renderer.domElement, document.body.firstChild);
 
-        let camera = new THREE.PerspectiveCamera(45,1,4,40000);
-        camera.setLens(35);
+        let rtTextures = [
+            new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } ),
+            new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } )
+        ];
+        let currentRtTexture = 0;
+        let altRtTexture = 1;
 
         let radius = 100;
 
-        let scene = new THREE.Scene();
+        let cameraRT = new THREE.PerspectiveCamera(45,1,4,400);
+        cameraRT.setLens(35);
+        cameraRT.position.z = radius;
+
+        let sceneRT = new THREE.Scene();
+        sceneRT.add(cameraRT);
+
+        let eraserGeometry = new THREE.PlaneBufferGeometry(100,80);
+        let eraserMaterial = new THREE.ShaderMaterial( {
+            uniforms: { tFeedback: { type: 't', value: null } },
+            vertexShader: `
+                varying vec2 vUv;
+    
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                }`,
+            fragmentShader: `
+                varying vec2 vUv;
+                uniform sampler2D tFeedback;
+    
+                void main() {
+                    gl_FragColor = texture2D( tFeedback, vUv )*0.99;
+                }`,
+            depthWrite: false
+        } );        let eraser = new THREE.Mesh(eraserGeometry, eraserMaterial);
+        sceneRT.add(eraser);
+
+        let backgroundUniforms:any = {
+            time : { type: "f", value: 0.0 },
+            mouse : {type: 'v3', value: new THREE.Vector3()},
+            color : {type: 'v4', value: new THREE.Vector4(0.5,0.5,0.5,1.0)}
+        };
+        let bp = createBackgroundPolygons(backgroundUniforms);
+        sceneRT.add(bp);
+
+        let camera = new THREE.PerspectiveCamera(45,1,4,40000);
+        camera.setLens(35);
         camera.position.z = radius;
+
+        let scene = new THREE.Scene();
         scene.add(camera);
+
+        let backdropGeometry = new THREE.PlaneBufferGeometry(20,20);
+        let backdropMaterial = new THREE.ShaderMaterial( {
+            uniforms: { tBackdrop: { type: 't', value: rtTextures[currentRtTexture].texture } },
+            vertexShader: `
+                varying vec2 vUv;
+    
+                void main() {
+                    vUv = uv;
+                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                }`,
+            fragmentShader: `
+                varying vec2 vUv;
+                uniform sampler2D tBackdrop;
+    
+                void main() {
+                    gl_FragColor = texture2D( tBackdrop, vUv );
+                }`,
+            depthWrite: false
+        } );
+
+        let backdrop = new THREE.Mesh( backdropGeometry, backdropMaterial );
+        scene.add(backdrop);
 
         const hashes: {[hash:string]:number;} = {
             aboutme: 1,
@@ -393,12 +463,6 @@ export class WebGLSupport {
                 return hashes[location.hash.substring(1, location.hash.length)];
         }
 
-        let backgroundUniforms:any = {
-            time : { type: "f", value: 0.0 },
-            mouse : {type: 'v3', value: new THREE.Vector3()},
-            color : {type: 'v4', value: new THREE.Vector4(0.5,0.5,0.5,1.0)}
-        };
-
         let foregroundUniforms:any = {
             time : { type: "f", value: 0.0 },
             face: { type: 't', value: null },
@@ -413,9 +477,8 @@ export class WebGLSupport {
             color : {type: 'v4', value: new THREE.Vector4(177/255,126/255,44/255,1)}
         };
         let fp = createForegroundPolygons(foregroundUniforms);
-        let bp = createBackgroundPolygons(backgroundUniforms);
+        //scene.add(fp);
 
-        scene.add(bp);
 
         let loader = new THREE.TextureLoader();
         let loaded = 0;
@@ -435,17 +498,25 @@ export class WebGLSupport {
             if (loaded === 2) {
                 timeLoaded = renderTime;
                 scene.add(fp);
+                console.log('All foreground textures loaded. Starting foreground rendering.');
             }
         }
 
         function resize() {
             renderer.setSize(window.innerWidth, window.innerHeight);
+            //rtTextures[0].setSize(window.innerWidth, window.innerHeight);
+            //rtTextures[1].setSize(window.innerWidth, window.innerHeight);
+
+            cameraRT.aspect = window.innerWidth / window.innerHeight;
+            cameraRT.updateProjectionMatrix();
+
             camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
 
             let height = (camera.fov*Math.PI/180)*radius/2;
             bp.position.x = -height*1.2 * camera.aspect;
             bp.position.y = -height*1.2;
+
             fp.position.x = (height * camera.aspect - foregroundUniforms.width.value/2)*1.1;
             fp.position.y = 0;
         };
@@ -475,17 +546,33 @@ export class WebGLSupport {
         let animate = function(t:number) {
             requestAnimationFrame(animate/*, renderer.domElement*/);
 
-            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement).backgroundColor) );
-
             t = t/1000;
             renderTime = t;
+
+            eraserMaterial.uniforms.tFeedback.value = rtTextures[altRtTexture].texture;
+
             backgroundUniforms.time.value = t;
-            foregroundUniforms.time.value = t-timeLoaded;
             backgroundUniforms.mouse.value.copy(target);
-            foregroundUniforms.mouse.value.copy(target);
             bp.worldToLocal(backgroundUniforms.mouse.value);
+            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement).backgroundColor) );
+            renderer.clearTarget(rtTextures[currentRtTexture], true, true, true);
+            renderer.render(sceneRT, cameraRT, rtTextures[currentRtTexture]);
+
+            backdropMaterial.uniforms.tBackdrop.value = rtTextures[currentRtTexture].texture;
+
+            foregroundUniforms.time.value = t-timeLoaded;
+            foregroundUniforms.mouse.value.copy(target);
             fp.worldToLocal(foregroundUniforms.mouse.value);
+//            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement).backgroundColor) );
+//            renderer.clear();
             renderer.render(scene, camera);
+
+
+            currentRtTexture++;
+            currentRtTexture %= 2;
+            altRtTexture++;
+            altRtTexture %= 2;
+
         };
         animate(0);
     };
