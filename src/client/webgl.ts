@@ -95,6 +95,7 @@ const backgroundPolygonShader = `
 const backgroundFragmentShader = `
       uniform float time;
       uniform vec4 color;
+      uniform int gradient;
 
       varying float vIdx;
       varying float vT;
@@ -102,10 +103,14 @@ const backgroundFragmentShader = `
       
       void main() {
         float a = (1.0-vT)*0.5;
-        vec2 uv = vUv*2.0-1.0;
-        a *= 1.0-length(uv);
-        //gl_FragColor = color*vec4(1.0,1.0,1.0,a);
-        gl_FragColor = color*vec4(vUv.s,vUv.t,1.0,a);
+        if(gradient==0) {
+            gl_FragColor = color*vec4(1.0,1.0,1.0,a);
+        }
+        else {
+            vec2 uv = vUv*2.0-1.0;
+            a *= 1.0-length(uv);
+            gl_FragColor = color*vec4(vUv.s,vUv.t,1.0,a);
+        }
       }`;
 const foregroundPolygonShader = `
       uniform float time;
@@ -319,7 +324,7 @@ function createPolygons (amount:number, sides: number, uniforms: any) {
 }
 
 function createBackgroundPolygons(uniforms:any) {
-    let geo = createPolygons(150, 4, uniforms);
+    let geo = createPolygons(150, 5, uniforms);
 
     let shaderMaterial = new THREE.ShaderMaterial({
         uniforms : uniforms,
@@ -369,6 +374,16 @@ export class WebGLSupport {
     public scene: THREE.Scene;
     public sceneRT: THREE.Scene;
 
+    public gradient = false;
+    public feedback = true;
+    public scale = 1.01;
+    public rotateZ = 0.01;
+    public fade = 0.96;
+    public blending = 'Custom';
+    public equation = 'Add';
+    public source = 'One';
+    public destination = 'OneMinusSrcColor';
+
     constructor() {
         let screenHeight = 70;
         let screenWidth = computeAspectRatio()*screenHeight;
@@ -398,7 +413,10 @@ export class WebGLSupport {
 
         let eraserGeometry = new THREE.PlaneBufferGeometry(screenWidth, screenHeight);
         let eraserMaterial = new THREE.ShaderMaterial( {
-            uniforms: { tFeedback: { type: 't', value: null } },
+            uniforms: {
+                tFeedback: { type: 't', value: null },
+                fade: { type: 'f', value: this.fade }
+             },
             vertexShader: `
                 varying vec2 vUv;
     
@@ -409,9 +427,10 @@ export class WebGLSupport {
             fragmentShader: `
                 varying vec2 vUv;
                 uniform sampler2D tFeedback;
+                uniform float fade;
     
                 void main() {
-                    gl_FragColor = texture2D( tFeedback, vUv )*0.99;
+                    gl_FragColor = texture2D( tFeedback, vUv )*fade;
                 }`,
             depthWrite: false
         } );        let eraser = new THREE.Mesh(eraserGeometry, eraserMaterial);
@@ -420,7 +439,8 @@ export class WebGLSupport {
         let backgroundUniforms:any = {
             time : { type: "f", value: 0.0 },
             mouse : {type: 'v3', value: new THREE.Vector3()},
-            color : {type: 'v4', value: new THREE.Vector4(0.5,0.5,0.5,1.0)}
+            color : {type: 'v4', value: new THREE.Vector4(0.5,0.5,0.5,1.0)},
+            gradient : {type: 'i', value: this.gradient?1:0}
         };
         let bp = createBackgroundPolygons(backgroundUniforms);
         sceneRT.add(bp);
@@ -569,17 +589,28 @@ export class WebGLSupport {
             foregroundUniforms.transitionTime.value = renderTime-timeLoaded;
         });
 
-        let animate = function(t:number) {
+        let animate = (t:number) => {
             requestAnimationFrame(animate/*, renderer.domElement*/);
 
             t = t/1000;
             renderTime = t;
 
             eraserMaterial.uniforms.tFeedback.value = rtTextures[altRtTexture].texture;
+            eraserMaterial.uniforms.fade.value = this.fade;
+            eraser.visible = this.feedback;
+            eraser.rotation.z = this.rotateZ;
+            eraser.scale.setScalar(this.scale);
 
             backgroundUniforms.time.value = t;
             backgroundUniforms.mouse.value.copy(target);
+            backgroundUniforms.gradient.value = this.gradient?1:0;
             bp.worldToLocal(backgroundUniforms.mouse.value);
+            let m = <THREE.Mesh>(bp.children[0]);
+            m.material.blending = <THREE.Blending>(<any>THREE)[this.blending+'Blending'];
+            m.material.blendEquation = <THREE.BlendingEquation>(<any>THREE)[this.equation+'Equation'];
+            m.material.blendDst = <THREE.BlendingDstFactor>(<any>THREE)[this.destination+'Factor'];
+            m.material.blendSrc = <THREE.BlendingSrcFactor>(<any>THREE)[this.source+'Factor'];
+
             renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement).backgroundColor) );
             renderer.clearTarget(rtTextures[currentRtTexture], true, true, true);
             renderer.render(sceneRT, cameraRT, rtTextures[currentRtTexture]);

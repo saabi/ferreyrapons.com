@@ -34,3 +34,14 @@ modal.onclick = function(ev) {
 
 let webgl = new WebGLSupport();
 
+let gui = new dat.GUI();
+gui.add(webgl, 'gradient');
+gui.add(webgl, 'feedback');
+gui.add(webgl, 'scale', 0.8, 1.2);
+gui.add(webgl, 'rotateZ', -0.2, 0.2);
+gui.add(webgl, 'fade', 0, 1);
+gui.add(webgl, 'blending', ['No', 'Normal', 'Additive', 'Substractive', 'Multiply', 'Custom']);
+gui.add(webgl, 'equation', ['Add','Subtract','ReverseSubtract','Min','Max']);
+gui.add(webgl, 'source', ['Zero','One','SrcColor','OneMinusSrcColor','SrcAlpha','OneMinusSrcAlpha','DstAlpha','OneMinusDstAlpha','DstColor','OneMinusDstColor','SrcAlphaSaturate']);
+gui.add(webgl, 'destination', ['Zero','One','SrcColor','OneMinusSrcColor','SrcAlpha','OneMinusSrcAlpha','DstAlpha','OneMinusDstAlpha','DstColor','OneMinusDstColor']);
+
