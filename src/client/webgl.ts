@@ -365,7 +365,15 @@ function createForegroundPolygons(uniforms:any) {
     return top;
 }
 export class WebGLSupport {
+    public camera: THREE.Camera;
+    public scene: THREE.Scene;
+    public sceneRT: THREE.Scene;
+
     constructor() {
+        let screenHeight = 70;
+        let screenWidth = computeAspectRatio()*screenHeight;
+        let cameraDistance = 100;
+
         let renderer = new THREE.WebGLRenderer({antialias: true});
         renderer.domElement.style.position = 'fixed';
         renderer.domElement.classList.add('screen');
@@ -380,16 +388,15 @@ export class WebGLSupport {
         let currentRtTexture = 0;
         let altRtTexture = 1;
 
-        let radius = 100;
+        let cameraRT = new THREE.OrthographicCamera(-screenWidth/2, screenWidth/2, screenHeight/2, -screenHeight/2, 1, 400);
 
-        let cameraRT = new THREE.PerspectiveCamera(45,1,4,400);
-        cameraRT.setLens(35);
-        cameraRT.position.z = radius;
+        cameraRT.position.z = cameraDistance;
 
         let sceneRT = new THREE.Scene();
+        this.sceneRT = sceneRT;
         sceneRT.add(cameraRT);
 
-        let eraserGeometry = new THREE.PlaneBufferGeometry(100,80);
+        let eraserGeometry = new THREE.PlaneBufferGeometry(screenWidth, screenHeight);
         let eraserMaterial = new THREE.ShaderMaterial( {
             uniforms: { tFeedback: { type: 't', value: null } },
             vertexShader: `
@@ -418,14 +425,17 @@ export class WebGLSupport {
         let bp = createBackgroundPolygons(backgroundUniforms);
         sceneRT.add(bp);
 
-        let camera = new THREE.PerspectiveCamera(45,1,4,40000);
-        camera.setLens(35);
-        camera.position.z = radius;
+        let camera = new THREE.OrthographicCamera(-screenWidth/2, screenWidth/2, screenHeight/2, -screenHeight/2, 1, 400);
+
+        camera.position.z = cameraDistance;
+
+        this.camera = camera;
 
         let scene = new THREE.Scene();
+        this.scene = scene;
         scene.add(camera);
 
-        let backdropGeometry = new THREE.PlaneBufferGeometry(20,20);
+        let backdropGeometry = new THREE.PlaneBufferGeometry(screenWidth, screenHeight);
         let backdropMaterial = new THREE.ShaderMaterial( {
             uniforms: { tBackdrop: { type: 't', value: rtTextures[currentRtTexture].texture } },
             vertexShader: `
@@ -447,6 +457,13 @@ export class WebGLSupport {
 
         let backdrop = new THREE.Mesh( backdropGeometry, backdropMaterial );
         scene.add(backdrop);
+
+        /*
+        let mockFgGeo = new THREE.PlaneBufferGeometry(68,70,1,1);
+        let mockFgMat = new THREE.MeshBasicMaterial({color:'white'});
+        let mockFg = new THREE.Mesh(mockFgGeo, mockFgMat);
+        scene.add(mockFg);
+        */
 
         const hashes: {[hash:string]:number;} = {
             aboutme: 1,
@@ -477,8 +494,6 @@ export class WebGLSupport {
             color : {type: 'v4', value: new THREE.Vector4(177/255,126/255,44/255,1)}
         };
         let fp = createForegroundPolygons(foregroundUniforms);
-        //scene.add(fp);
-
 
         let loader = new THREE.TextureLoader();
         let loaded = 0;
@@ -501,23 +516,25 @@ export class WebGLSupport {
                 console.log('All foreground textures loaded. Starting foreground rendering.');
             }
         }
+        function computeAspectRatio() {
+            let aspect = window.innerWidth / window.innerHeight;
+            return aspect;
+        }
 
         function resize() {
             renderer.setSize(window.innerWidth, window.innerHeight);
-            //rtTextures[0].setSize(window.innerWidth, window.innerHeight);
-            //rtTextures[1].setSize(window.innerWidth, window.innerHeight);
+            rtTextures[0].setSize(window.innerWidth, window.innerHeight);
+            rtTextures[1].setSize(window.innerWidth, window.innerHeight);
 
-            cameraRT.aspect = window.innerWidth / window.innerHeight;
             cameraRT.updateProjectionMatrix();
-
-            camera.aspect = window.innerWidth / window.innerHeight;
             camera.updateProjectionMatrix();
 
-            let height = (camera.fov*Math.PI/180)*radius/2;
-            bp.position.x = -height*1.2 * camera.aspect;
-            bp.position.y = -height*1.2;
+            let halfHeight = screenHeight/2;
+            let aspect = computeAspectRatio();
+            bp.position.x = -halfHeight*1.2 * aspect;
+            bp.position.y = -halfHeight*1.2;
 
-            fp.position.x = (height * camera.aspect - foregroundUniforms.width.value/2)*1.1;
+            fp.position.x = (halfHeight * aspect - foregroundUniforms.width.value/2)*1.1;
             fp.position.y = 0;
         };
         window.addEventListener('resize', resize);
@@ -528,13 +545,22 @@ export class WebGLSupport {
         let mouse = new THREE.Vector3();
 
         window.onmousemove = function (ev) {
+            let aspect = computeAspectRatio()*screenHeight/2;
             mouse.x = (ev.clientX / renderer.domElement.clientWidth) * 2 - 1;
             mouse.y = -(ev.clientY / renderer.domElement.clientHeight) * 2 + 1;
-            mouse.z = 0.5;
-            mouse.unproject(camera);
-            let dir = mouse.sub( camera.position ).normalize();
-            let distance = - camera.position.z / dir.z;
-            target = camera.position.clone().add( dir.multiplyScalar( distance ) );
+            mouse.z = 0;
+
+            target.copy(mouse);
+            target.x *= aspect;
+            target.y *= screenHeight/2;
+        };
+
+        window.onmouseup = function (ev) {
+            console.log('mouse: ' + mouse.x +'\t'+  mouse.y +'\t'+  mouse.z );
+            console.log('target: ' + target.x +'\t'+  target.y +'\t'+  target.z );
+            let t = target.clone();
+            fp.worldToLocal(t);
+            console.log('local: ' + t.x +'\t'+  t.y +'\t'+  t.z);
         };
 
         window.addEventListener('hashchange', function (ev) {
@@ -563,8 +589,6 @@ export class WebGLSupport {
             foregroundUniforms.time.value = t-timeLoaded;
             foregroundUniforms.mouse.value.copy(target);
             fp.worldToLocal(foregroundUniforms.mouse.value);
-//            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement).backgroundColor) );
-//            renderer.clear();
             renderer.render(scene, camera);
 
 
