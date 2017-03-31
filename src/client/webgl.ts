@@ -15,6 +15,8 @@ const backgroundPolygonShader = `
       uniform float time;
       uniform vec3 mouse;
 
+      attribute float aIdx;
+
       varying float vIdx;
       varying float vT;
       varying vec2 vUv;
@@ -43,17 +45,6 @@ const backgroundPolygonShader = `
         return pos1;
       }
 
-      vec3 lookAt(vec3 eye1, vec3 fPos) {
-        vec3 up = vec3(0.0,1.0,0.0);
-        vec3 za = eye1;
-        vec3 xa = normalize(cross(up,za));
-        vec3 ya = cross(za,xa);
-        
-        mat4 la = mat4(xa,0.0,ya,0.0,za,0.0,0.0,0.0,0.0,1.0);
-
-        return (la*vec4(fPos,1.0)).xyz;
-      }
-
       vec3 process(float idx, vec3 fPos) {
         float x0 = rand(vec2(idx, 4.0))*50.0;
         float vx = rand(vec2(idx, 0.0))*0.1;
@@ -73,18 +64,14 @@ const backgroundPolygonShader = `
         fPos *= t2*prox;
         fPos *= (1.0-vT)*size;
         fPos = rotate(fPos, time*5.0*vx);
-        //fPos = lookAt(normalize(mid1-cameraPosition), fPos);
         fPos += mid1;
 
         return fPos;      
       }
 
       void main() {
-        float idx = floor(position.x/2.2);
-        vec3 mid = vec3(idx*2.2 + 1.1, 0.0, 0.0);
-        vec3 fPos = position-mid;
-
-        fPos = process(idx, fPos);
+        float idx = aIdx;
+        vec3 fPos = process(idx, position);
 
         vec4 mvPosition = modelViewMatrix * vec4(fPos, 1.0);
         vec4 p = projectionMatrix * mvPosition;
@@ -125,6 +112,8 @@ const foregroundPolygonShader = `
       uniform float newIdx;
       uniform vec4 color;
 
+      attribute float aIdx;
+
       varying float vIdx;
       varying float vT;
       varying vec2 vUv;
@@ -154,16 +143,6 @@ const foregroundPolygonShader = `
         return pos1;
       }
 
-      vec3 lookAt(vec3 eye1, vec3 fPos) {
-        vec3 up = vec3(0.0,1.0,0.0);
-        vec3 za = eye1;
-        vec3 xa = normalize(cross(up,za));
-        vec3 ya = cross(za,xa);
-        
-        mat4 la = mat4(xa,0.0,ya,0.0,za,0.0,0.0,0.0,0.0,1.0);
-
-        return (la*vec4(fPos,1.0)).xyz;
-      }
       vec2 calcIconUVs(float idx, vec2 coord) {
         float idx2 = mod(idx,6.0)+2.0;
         vec2 offset = vec2(mod(idx2,2.0),0.0);
@@ -205,7 +184,6 @@ const foregroundPolygonShader = `
 
         float prox = 7.0-smoothstep(0.0, 20.0, distance(mouse,mid1))*6.0;
   
-        //fPos = lookAt(normalize(mid1-cameraPosition), fPos);
         fPos *= a*t*prox;
         fPos += mid1;
 
@@ -213,11 +191,8 @@ const foregroundPolygonShader = `
       }
 
       void main() {
-        float idx = floor(position.x/2.2);
-        vec3 mid = vec3(idx*2.2 + 1.1, 0.0, 0.0);
-        vec3 fPos = position-mid;
-
-        fPos = process(idx, fPos);
+        float idx = aIdx;
+        vec3 fPos = process(idx, position);
 
         vec4 mvPosition = modelViewMatrix * vec4(fPos, 1.0);
         vec4 p = projectionMatrix * mvPosition;
@@ -311,20 +286,32 @@ function regularPolygon2(geo:THREE.Geometry, sides:number, cx:number, cy:number,
         side++;
     }
 }
-function createPolygons (amount:number, sides: number, uniforms: any) {
-    let geo = new THREE.Geometry();
 
-    const cx = 1.1;
-    const cy = 0;
+function createPolygons (amount:number, sides: number, cx=1.1, cy = 0) {
+    let geo = new THREE.Geometry();
 
     for (let i=0; i<amount; i++) {
         regularPolygon2(geo, sides, cx, cy, i);
     }
     return geo;
 }
+function createInstancedPolygons(amount:number, sides: number) {
+    let polygonGeo = createPolygons(1, sides, 0, 0);
+    let geo = new THREE.InstancedBufferGeometry();
+    geo.fromGeometry(polygonGeo);
+    geo.maxInstancedCount = amount;
+
+    let indexes = new THREE.InstancedBufferAttribute(new Float32Array(amount), 1, 1);
+    for (let i=0; i<indexes.count; i++) {
+        indexes.setX(i, i);
+    }
+    geo.addAttribute('aIdx', indexes);
+
+    return geo;
+}
 
 function createBackgroundPolygons(uniforms:any) {
-    let geo = createPolygons(150, 5, uniforms);
+    let geo = createInstancedPolygons(150, 5);
 
     let shaderMaterial = new THREE.ShaderMaterial({
         uniforms : uniforms,
@@ -343,13 +330,15 @@ function createBackgroundPolygons(uniforms:any) {
         shaderMaterial
     );
 
+    polygons.frustumCulled = false;
+
     let top = new THREE.Object3D();
     top.add(polygons);
     return top;
 }
 
 function createForegroundPolygons(uniforms:any) {
-    let geo = createPolygons(5000, 4, uniforms);
+    let geo = createInstancedPolygons(5000, 4);
     let shaderMaterial = new THREE.ShaderMaterial({
         uniforms : uniforms,
         vertexShader : foregroundPolygonShader,
