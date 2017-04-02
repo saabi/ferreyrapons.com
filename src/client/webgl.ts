@@ -354,6 +354,8 @@ function createForegroundPolygons(uniforms:any) {
         shaderMaterial
     );
 
+    polygons.frustumCulled = false;
+
     let top = new THREE.Object3D();
     top.add(polygons);
     return top;
@@ -363,6 +365,7 @@ export class WebGLSupport {
     public scene: THREE.Scene;
     public sceneRT: THREE.Scene;
 
+    public useRenderTarget = false;
     public gradient = false;
     public feedback = true;
     public scale = 1.01;
@@ -374,56 +377,19 @@ export class WebGLSupport {
     public destination = 'OneMinusSrcColor';
 
     constructor() {
+        let self = this;
         let screenHeight = 70;
         let screenWidth = computeAspectRatio()*screenHeight;
         let cameraDistance = 100;
 
-        let renderer = new THREE.WebGLRenderer({antialias: true});
+        let renderer = new THREE.WebGLRenderer({antialias: true, alpha:true, depth: false, stencil: false,});
         renderer.domElement.style.position = 'fixed';
+        renderer.domElement.style.width = 
+        renderer.domElement.style.height = '100%';
         renderer.domElement.classList.add('screen');
         renderer.autoClear = false;
 
         document.body.insertBefore(renderer.domElement, document.body.firstChild);
-
-        let rtTextures = [
-            new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } ),
-            new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, { minFilter: THREE.LinearFilter, magFilter: THREE.NearestFilter, format: THREE.RGBAFormat } )
-        ];
-        let currentRtTexture = 0;
-        let altRtTexture = 1;
-
-        let cameraRT = new THREE.OrthographicCamera(-screenWidth/2, screenWidth/2, screenHeight/2, -screenHeight/2, 1, 400);
-
-        cameraRT.position.z = cameraDistance;
-
-        let sceneRT = new THREE.Scene();
-        this.sceneRT = sceneRT;
-        sceneRT.add(cameraRT);
-
-        let eraserGeometry = new THREE.PlaneBufferGeometry(screenWidth, screenHeight);
-        let eraserMaterial = new THREE.ShaderMaterial( {
-            uniforms: {
-                tFeedback: { type: 't', value: null },
-                fade: { type: 'f', value: this.fade }
-             },
-            vertexShader: `
-                varying vec2 vUv;
-    
-                void main() {
-                    vUv = uv;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-                }`,
-            fragmentShader: `
-                varying vec2 vUv;
-                uniform sampler2D tFeedback;
-                uniform float fade;
-    
-                void main() {
-                    gl_FragColor = texture2D( tFeedback, vUv )*fade;
-                }`,
-            depthWrite: false
-        } );        let eraser = new THREE.Mesh(eraserGeometry, eraserMaterial);
-        sceneRT.add(eraser);
 
         let backgroundUniforms:any = {
             time : { type: "f", value: 0.0 },
@@ -432,40 +398,113 @@ export class WebGLSupport {
             gradient : {type: 'i', value: this.gradient?1:0}
         };
         let bp = createBackgroundPolygons(backgroundUniforms);
-        sceneRT.add(bp);
+        bp.name = 'background particles';
+
+        let textureParams = {
+            minFilter: THREE.LinearFilter,
+            magFilter: THREE.NearestFilter,
+            depthBuffer: false,
+            stencilBuffer: false,
+            format: THREE.RGBAFormat
+        };
+        let currentRtTexture = 0;
+        let altRtTexture = 1;
+        let rtTextures: THREE.WebGLRenderTarget[];
+        let cameraRT: THREE.OrthographicCamera;
+        let sceneRT: THREE.Scene;
+        let feedbackMaterial: THREE.ShaderMaterial;
+        let feedback: THREE.Mesh;
+        if (this.useRenderTarget) {
+            rtTextures = [
+                new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, textureParams ),
+                new THREE.WebGLRenderTarget( window.innerWidth, window.innerHeight, textureParams )
+            ];
+            cameraRT = new THREE.OrthographicCamera(-screenWidth/2, screenWidth/2, screenHeight/2, -screenHeight/2, 1, 400);
+            cameraRT.name = 'backdrop camera';
+
+            cameraRT.position.z = cameraDistance;
+
+            sceneRT = new THREE.Scene();
+            sceneRT.name = 'backdrop scene';
+            this.sceneRT = sceneRT;
+            sceneRT.add(cameraRT);
+
+            let feedbackGeometry = new THREE.PlaneBufferGeometry(1, 1);
+            feedbackMaterial = new THREE.ShaderMaterial( {
+                uniforms: {
+                    tFeedback: { type: 't', value: null },
+                    fade: { type: 'f', value: this.fade }
+                },
+                vertexShader: `
+                    varying vec2 vUv;
+        
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                    }`,
+                fragmentShader: `
+                    varying vec2 vUv;
+                    uniform sampler2D tFeedback;
+                    uniform float fade;
+        
+                    void main() {
+                        gl_FragColor = texture2D( tFeedback, vUv )*fade;
+                    }`,
+                depthWrite: false
+            } );
+            feedback = new THREE.Mesh(feedbackGeometry, feedbackMaterial);
+            feedback.name = 'feedback';
+            feedback.scale.x = screenWidth;
+            feedback.scale.y = screenHeight;
+            sceneRT.add(feedback);
+
+            sceneRT.add(bp);
+        }
+
 
         let camera = new THREE.OrthographicCamera(-screenWidth/2, screenWidth/2, screenHeight/2, -screenHeight/2, 1, 400);
+        camera.name = 'main camera';
 
         camera.position.z = cameraDistance;
 
         this.camera = camera;
 
         let scene = new THREE.Scene();
+        scene.name = 'main scene';
         this.scene = scene;
         scene.add(camera);
 
-        let backdropGeometry = new THREE.PlaneBufferGeometry(screenWidth, screenHeight);
-        let backdropMaterial = new THREE.ShaderMaterial( {
-            uniforms: { tBackdrop: { type: 't', value: rtTextures[currentRtTexture].texture } },
-            vertexShader: `
-                varying vec2 vUv;
-    
-                void main() {
-                    vUv = uv;
-                    gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
-                }`,
-            fragmentShader: `
-                varying vec2 vUv;
-                uniform sampler2D tBackdrop;
-    
-                void main() {
-                    gl_FragColor = texture2D( tBackdrop, vUv );
-                }`,
-            depthWrite: false
-        } );
+        let backdropMaterial: THREE.ShaderMaterial;
+        let backdrop: THREE.Mesh;
+        if (this.useRenderTarget) {
+            let backdropGeometry = new THREE.PlaneBufferGeometry(1, 1);
+            backdropMaterial = new THREE.ShaderMaterial( {
+                uniforms: { tBackdrop: { type: 't', value: rtTextures[currentRtTexture].texture } },
+                vertexShader: `
+                    varying vec2 vUv;
+        
+                    void main() {
+                        vUv = uv;
+                        gl_Position = projectionMatrix * modelViewMatrix * vec4( position, 1.0 );
+                    }`,
+                fragmentShader: `
+                    varying vec2 vUv;
+                    uniform sampler2D tBackdrop;
+        
+                    void main() {
+                        gl_FragColor = texture2D( tBackdrop, vUv );
+                    }`,
+                depthWrite: false
+            } );
 
-        let backdrop = new THREE.Mesh( backdropGeometry, backdropMaterial );
-        scene.add(backdrop);
+            backdrop = new THREE.Mesh( backdropGeometry, backdropMaterial );
+            backdrop.name = 'backdrop plane';
+            backdrop.scale.x = screenWidth;
+            backdrop.scale.y = screenHeight;
+            scene.add(backdrop);
+        }
+        else
+            scene.add(bp);
 
         /*
         let mockFgGeo = new THREE.PlaneBufferGeometry(68,70,1,1);
@@ -503,6 +542,7 @@ export class WebGLSupport {
             color : {type: 'v4', value: new THREE.Vector4(177/255,126/255,44/255,1)}
         };
         let fp = createForegroundPolygons(foregroundUniforms);
+        fp.name = 'foreground particles';
 
         let loader = new THREE.TextureLoader();
         let loaded = 0;
@@ -530,25 +570,51 @@ export class WebGLSupport {
             return aspect;
         }
 
-        function resize() {
+        function resizeForegroundBitmaps () {
             renderer.setSize(window.innerWidth, window.innerHeight);
-            rtTextures[0].setSize(window.innerWidth, window.innerHeight);
-            rtTextures[1].setSize(window.innerWidth, window.innerHeight);
+            renderer.domElement.style.width = 
+            renderer.domElement.style.height = '100%';
+            if (self.useRenderTarget)
+                rtTextures[currentRtTexture].setSize(window.innerWidth, window.innerHeight);
+        }
+        function resizeBackgroundBitmaps () {
+            if (self.useRenderTarget)
+                rtTextures[altRtTexture].setSize(window.innerWidth, window.innerHeight);
+        };
+        function scaleObjects () {
+            let aspect = computeAspectRatio();
+            screenWidth = aspect*screenHeight;
 
-            cameraRT.updateProjectionMatrix();
+            camera.left = -screenWidth/2;
+            camera.right = screenWidth/2;
             camera.updateProjectionMatrix();
 
+            if (self.useRenderTarget) {
+                cameraRT.left = -screenWidth/2;
+                cameraRT.right = screenWidth/2;
+                cameraRT.updateProjectionMatrix();
+
+                backdrop.scale.x = feedback.scale.x = screenWidth;
+            }
+
             let halfHeight = screenHeight/2;
-            let aspect = computeAspectRatio();
             bp.position.x = -halfHeight*1.2 * aspect;
             bp.position.y = -halfHeight*1.2;
 
             fp.position.x = (halfHeight * aspect - foregroundUniforms.width.value/2)*1.1;
             fp.position.y = 0;
         };
-        window.addEventListener('resize', resize);
+        let lastResize = Date.now();
+        function resizing () {
+            lastResize = Date.now();
+            scaleObjects();
+        };
 
-        resize();
+        window.addEventListener('resize', resizing);
+
+        resizeForegroundBitmaps();
+        resizeBackgroundBitmaps();
+        resizing();
 
         let target = new THREE.Vector3();
         let mouse = new THREE.Vector3();
@@ -581,14 +647,13 @@ export class WebGLSupport {
         let animate = (t:number) => {
             requestAnimationFrame(animate/*, renderer.domElement*/);
 
+            let expiryTime = lastResize + 300;
+            let now = Date.now();
+            if (expiryTime < now)
+                resizeForegroundBitmaps();
+
             t = t/1000;
             renderTime = t;
-
-            eraserMaterial.uniforms.tFeedback.value = rtTextures[altRtTexture].texture;
-            eraserMaterial.uniforms.fade.value = this.fade;
-            eraser.visible = this.feedback;
-            eraser.rotation.z = this.rotateZ;
-            eraser.scale.setScalar(this.scale);
 
             backgroundUniforms.time.value = t;
             backgroundUniforms.mouse.value.copy(target);
@@ -600,17 +665,27 @@ export class WebGLSupport {
             m.material.blendDst = <THREE.BlendingDstFactor>(<any>THREE)[this.destination+'Factor'];
             m.material.blendSrc = <THREE.BlendingSrcFactor>(<any>THREE)[this.source+'Factor'];
 
-            renderer.setClearColor( parseCssRgb(getComputedStyle(document.documentElement).backgroundColor) );
-            renderer.clearTarget(rtTextures[currentRtTexture], true, true, true);
-            renderer.render(sceneRT, cameraRT, rtTextures[currentRtTexture]);
+            if (this.useRenderTarget) {
+                feedbackMaterial.uniforms.tFeedback.value = rtTextures[altRtTexture].texture;
+                feedbackMaterial.uniforms.fade.value = this.fade;
+                feedback.visible = this.feedback;
+                feedback.rotation.z = this.rotateZ;
+                feedback.scale.setX(this.scale*screenWidth);
+                feedback.scale.setY(this.scale*screenHeight);
 
-            backdropMaterial.uniforms.tBackdrop.value = rtTextures[currentRtTexture].texture;
+                renderer.clearTarget(rtTextures[currentRtTexture], true, true, true);
+                renderer.render(sceneRT, cameraRT, rtTextures[currentRtTexture]);
+
+                backdropMaterial.uniforms.tBackdrop.value = rtTextures[currentRtTexture].texture;
+            }
 
             foregroundUniforms.time.value = t-timeLoaded;
             foregroundUniforms.mouse.value.copy(target);
             fp.worldToLocal(foregroundUniforms.mouse.value);
-            renderer.render(scene, camera);
 
+            renderer.render(scene, camera);
+            if (expiryTime < now)
+                resizeBackgroundBitmaps();
 
             currentRtTexture++;
             currentRtTexture %= 2;
