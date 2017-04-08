@@ -1,6 +1,11 @@
+@-ms-viewport{
+  width: device-width;
+}
+
 html {
     width: 100%;
     height: 100%;
+    overflow: hidden;
 }
 body {
     position: absolute;
@@ -13,19 +18,37 @@ body {
 }
 body > header {
     position: absolute;
-    width: calc(100% - 100vh);
-    min-width: 500px;
-    margin: 8vh 5vh;
-    /* transition: 0.5s width; */
+    width: calc(100% - 10vh);
+    max-width: 500px;
+    margin: 5vh;
     overflow: hidden;
+    clip: auto;
+}
+@media (-webkit-min-device-pixel-ratio: 2),
+(min--moz-device-pixel-ratio: 2),
+(-o-device-pixel-ratio: 2), 
+(min-device-pixel-ratio: 2) {
+    body > header {
+        max-width: 200px;
+    }
 }
 body > header > h1 {
     margin: 0;
     display: inline-block;
+    font-size: calc(100% * 0.09) /*59px*/;
+    overflow: hidden;
 }
 body > header > h2 {
     margin: 0;
     display: inline-block;
+    font-size: 30px;
+    overflow: hidden;
+}
+body > header > menu {
+    transition: opacity 1s;
+}
+.hidden-while-loading {
+    opacity: 0;
 }
 .print {
     display: none;
@@ -33,11 +56,11 @@ body > header > h2 {
 #cv {
     box-sizing: border-box;
     position: fixed;
-    top: 38vh;
+    top: 253px;
     bottom: 5vh;
     left: 5vh;
-    width: calc(100% - 100vh);
-    min-width: 500px;
+    right: 5vh;
+    /* min-width: 500px; */
 }
 .content {
     position: absolute;
@@ -46,13 +69,24 @@ body > header > h2 {
     margin: 0;
     border-radius: 6px;
     /*border: 10px solid #5A002D;*/
-    border: 10px solid;
+    /*border: 10px solid;*/
     width: 100%;
     overflow-y: auto;
 
     height: 0;
     transition: opacity 0.5s, height 0.5s;
 }
+/*
+.content:before {
+    content: '';
+    display: block;
+    position: fixed;
+    pointer-events: none;
+    width: 100%;
+    height: 100%;
+    /*box-shadow: inset 8px 8px 16px 0px rgba(0, 0, 0, 0.66);
+}
+*/
 .content:target {
     height: 100%;
 }
@@ -68,17 +102,18 @@ body > header > h2 {
 .content h4 {
     float: left;
     margin: 0 0;
-    padding: 1.5vh 0vh 0 0vh;
-    width: 18vh;
+    padding: 1vh 0vh 0 0vh;
+    width: 28%;
 }
 .content p {
-    margin: 0;
-    padding: 1vh 4vh;
+    margin: 2vh auto 4vh auto;
+    padding: 0;
+    width: 70%;
 }
 .content address {
     display: block;
-    margin-left: 20vh;
-    padding: 1.5vh 0;
+    margin-left: 30%;
+    padding: 1vh 0;
 }
 .content  img {
     vertical-align: top;
@@ -87,24 +122,35 @@ body > header > h2 {
 }
 #menu {
     padding: 0;
+    margin: 0;
 }
 #menu a {
     vertical-align: top;
     display: inline-block;
+    position: relative;
     margin: auto;
-    width: 16%;
+    width: 15%;
 }
-#menu img {
-    height: 48px;
-    transition: height 0.5s;
+#menu img, #menu svg {
+    width: 80%;
+    height: 80%;
+    max-width: 48px;
+    max-height: 48px;
+    transition: height 0.5s, width 0.5s, max-height 0.5s, max-width 0.5s, padding-bottom 0.5s;
+    padding-bottom: 21%;
 }
-#menu a:hover img {
-    height: 64px;
+#menu a:hover img, #menu a:hover svg {
+    width: 100%;
+    height: 100%;
+    max-width: 64px;
+    max-height: 64px;
+    padding-bottom: 0%;
 }
 #menu h3 {
     margin: 0;
     padding: 0;
-    transition: color 0.5s, font-size 0.5s, opacity 0.5s;
+    transition: color 0.5s, font-size 0.5s, opacity 0.5s, padding-bottom 0.5s;
+    padding-bottom: 2.2vh;
 }
 ::-webkit-scrollbar
 {
@@ -157,6 +203,7 @@ html.typo1 #menu a {
 }
 html.typo1 #menu h3 {
     font-size: 12px;
+    margin:auto;
 }
 html.typo1 #menu a:hover h3 {
     font-size: 16px;
@@ -173,7 +220,6 @@ html.typo2 body > header {
 }
 html.typo2 body > header > h1 {
     font-weight: 400;
-    font-size: 42.9px;
     /* transition: 0.25s font-size; */
     word-break: keep-all;
     line-break: strict;
@@ -181,7 +227,6 @@ html.typo2 body > header > h1 {
 html.typo2 body > header > h2 {
     font-weight: 200;
     font-style: italic;
-    font-size: 21.7px;
     /* transition: 0.25s font-size; */
     word-break: keep-all;
     line-break: strict;
@@ -194,10 +239,20 @@ html.typo2 .content h3 {
 }
 html.typo2 .content h4 {
     text-align: right;
+    font-size: 8pt;
+}
+html.typo2 .content address {
+    font-size: 12pt;
 }
 html.typo2 .content p {
     font-weight: 200;
     font-style: italic;
+    font-size: 12pt;
+}
+html.typo2 .content address {
+    font-weight: 200;
+    font-style: italic;
+    font-size: 2vh;
 }
 html.typo2 #menu a {
     text-decoration: none;
@@ -205,21 +260,27 @@ html.typo2 #menu a {
     vertical-align: top;
 }
 html.typo2 #menu h3 {
-    font-size: 12px;
+    font-size: 0vh;
+    word-break: keep-all;
 }
 html.typo2 #menu a:hover h3 {
-    font-size: 16px;
+    font-size: 2vh;
+    word-break: keep-all;
+    margin: auto;
+    text-align: center;
+    padding-bottom: 0vh;
 }
 
 
 /* headers mod */
 html.headers .content h2 {
-    margin-bottom: 1vh;
+    margin-bottom: 4vh;
 }
 html.headers .content h3 {
-    margin: 0 1vh;
+    margin: 6vh auto 1vh auto;
     padding: 0 3vh;
     border-radius: 6px;
+    width: 80%;
 }
 
 
@@ -265,6 +326,9 @@ html.drk1 #menu h3 {
 html.drk1 #menu a:hover h3 {
     color: #B17E2C;
     opacity: 1;
+}
+html.drk1 #menu path {
+    fill: #fff;
 }
 html.drk1 ::-webkit-scrollbar
 {
@@ -333,6 +397,9 @@ html.drk2 #menu a:hover h3 {
     color: #B17E2C;
     opacity: 1;
 }
+html.drk2 #menu path {
+    fill: #fff;
+}
 html.drk2 ::-webkit-scrollbar
 {
     background: none;
@@ -354,3 +421,72 @@ html.drk2 ::-webkit-scrollbar-thumb:hover
     background: rgba(119, 80, 0, 0.9);
 }
 
+/* color scheme 2 */
+
+html.drk3 {
+    background: #000318;
+    color: white;
+}
+html.drk3 body > header > h2 {
+    color: #B17E2C;
+}
+html.drk3 .content {
+    background: white;
+    color: black;
+    opacity: 0;
+}
+html.drk3 .content:target {
+    opacity: 1;
+}
+html.drk3 .content h2 {
+    background: #774000;
+    color: white;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 1);
+}
+html.drk3 .content h3 {
+    background: #ead583;
+    color: #000318;
+}
+html.drk3 .content h4 {
+}
+html.drk3 .content p {
+}
+html.drk3 .content address {
+}
+html.drk3 #menu a:visited {
+    color: white;
+}
+html.drk3 .content a {
+    color: black;
+}
+html.drk3 #menu h3 {
+    color: white;
+    opacity: 0;
+}
+html.drk3 #menu a:hover h3 {
+    color: #B17E2C;
+    opacity: 1;
+}
+html.drk3 #menu path {
+    fill: #fff;
+}
+html.drk3 ::-webkit-scrollbar
+{
+    background: none;
+}
+
+html.drk3 ::-webkit-scrollbar-track
+{
+    background: none;
+}
+
+html.drk3 ::-webkit-scrollbar-thumb
+{
+    background: rgba(119, 80, 0, 0.67);
+    border-radius: 3px;
+}
+
+html.drk3 ::-webkit-scrollbar-thumb:hover
+{
+    background: rgba(119, 80, 0, 0.9);
+}

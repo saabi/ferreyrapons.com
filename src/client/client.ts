@@ -3,25 +3,37 @@
  */
 
 import {WebGLSupport} from "webgl";
-
-const header = <HTMLElement>document.querySelector('body > header');
-const h1 = <HTMLElement>document.querySelector('body > header > h1');
-const h2 = <HTMLElement>document.querySelector('body > header > h2');
-const cv = <HTMLElement>document.querySelector('#cv');
-const h1fs = parseInt(window.getComputedStyle(h1).fontSize) / h1.offsetWidth;
-const h2fs = parseInt(window.getComputedStyle(h2).fontSize) / h2.offsetWidth;
-h1.style.fontSize = 0.95 * header.offsetWidth * h1fs + 'px';
-h2.style.fontSize = 0.95 * header.offsetWidth * h2fs + 'px';
-
-function resize() {
-    h1.style.fontSize = 0.95 * header.offsetWidth * h1fs + 'px';
-    h2.style.fontSize = 0.95 * header.offsetWidth * h2fs + 'px';
-    cv.style.top = header.offsetTop + header.offsetHeight + 16 + 'px';
-    cv.style.width = header.offsetWidth + 'px';
+/*
+interface MyWindow extends Window {
+    webgl: WebGLSupport;
+}
+declare var window: MyWindow;
+*/
+declare global {
+    function resize() : void;
+    interface Window {
+        webgl: WebGLSupport;
+    }
 }
 
-window.addEventListener('resize', resize);
-resize();
+//replace SVG images by inline SVG
+let menuImgs = document.body.querySelectorAll('#menu img');
+for (let i=0; i<menuImgs.length; i++) {
+    let img = menuImgs[i];
+    let imgURL = (<HTMLImageElement>img).src;
+
+    let req = new XMLHttpRequest();
+    addLoadingTask();
+    req.open("GET", imgURL, true);
+
+    req.onreadystatechange = function() {
+        if(req.readyState == 4) {
+            img.outerHTML = req.responseText;
+            closeLoadingTask();
+        }
+    };
+    req.send();
+};
 
 const modal = document.createElement('div');
 modal.style.position = 'fixed';
@@ -34,14 +46,39 @@ modal.onclick = function(ev) {
 
 let webgl = new WebGLSupport();
 
-let gui = new dat.GUI();
-gui.add(webgl, 'gradient');
-gui.add(webgl, 'feedback');
-gui.add(webgl, 'scale', 0.8, 1.2);
-gui.add(webgl, 'rotateZ', -0.2, 0.2);
-gui.add(webgl, 'fade', 0, 1);
-gui.add(webgl, 'blending', ['No', 'Normal', 'Additive', 'Substractive', 'Multiply', 'Custom']);
-gui.add(webgl, 'equation', ['Add','Subtract','ReverseSubtract','Min','Max']);
-gui.add(webgl, 'source', ['Zero','One','SrcColor','OneMinusSrcColor','SrcAlpha','OneMinusSrcAlpha','DstAlpha','OneMinusDstAlpha','DstColor','OneMinusDstColor','SrcAlphaSaturate']);
-gui.add(webgl, 'destination', ['Zero','One','SrcColor','OneMinusSrcColor','SrcAlpha','OneMinusSrcAlpha','DstAlpha','OneMinusDstAlpha','DstColor','OneMinusDstColor']);
+function createGUI () {
+    let gui = new dat.GUI();
+    gui.add(webgl, 'gradient');
+    gui.add(webgl, 'feedback');
+    gui.add(webgl, 'scale', 0.8, 1.2);
+    gui.add(webgl, 'rotateZ', -0.2, 0.2);
+    gui.add(webgl, 'fade', 0, 1);
+    gui.add(webgl, 'blending', ['No', 'Normal', 'Additive', 'Substractive', 'Multiply', 'Custom']);
+    gui.add(webgl, 'equation', ['Add','Subtract','ReverseSubtract','Min','Max']);
+    gui.add(webgl, 'source', ['Zero','One','SrcColor','OneMinusSrcColor','SrcAlpha','OneMinusSrcAlpha','DstAlpha','OneMinusDstAlpha','DstColor','OneMinusDstColor','SrcAlphaSaturate']);
+    gui.add(webgl, 'destination', ['Zero','One','SrcColor','OneMinusSrcColor','SrcAlpha','OneMinusSrcAlpha','DstAlpha','OneMinusDstAlpha','DstColor','OneMinusDstColor']);
+}
 
+window.webgl = webgl;
+
+var tasks = 0;
+function start() {
+    //document.getElementById('loadingMessage').remove();
+    var hidden = Array.prototype.slice.call( document.getElementsByClassName('hidden-while-loading') );
+    for (var i in hidden) {
+        hidden[i].classList.remove('hidden-while-loading');
+    }
+    resize();
+    webgl.start();
+}
+function addLoadingTask() {
+    tasks++;
+}
+function closeLoadingTask() {
+    tasks--;
+    if (tasks==0) {
+        setTimeout(start, 100);
+    }
+}
+window.addEventListener('load', start);
+setTimeout(start, 100);

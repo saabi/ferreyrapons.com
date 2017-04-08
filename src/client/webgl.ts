@@ -3,6 +3,9 @@
  */
 import * as THREE from 'three';
 //import * as OrbitControls from 'OrbitControls';
+declare global {
+    var header: HTMLElement;
+}
 
 function parseCssRgb(input:string) : number {
     let m = input.match(/^rgb\s*\(\s*(\d+)\s*,\s*(\d+)\s*,\s*(\d+)\s*\)$/i);
@@ -11,6 +14,12 @@ function parseCssRgb(input:string) : number {
     }
     return 0;
 }
+function qubicEaseInOut (t:number, b:number, c:number, d:number) {
+	t /= d/2;
+	if (t < 1) return c/2*t*t*t + b;
+	t -= 2;
+	return c/2*(t*t*t + 2) + b;
+};
 const backgroundPolygonShader = `
       uniform float time;
       uniform vec3 mouse;
@@ -338,7 +347,11 @@ function createBackgroundPolygons(uniforms:any) {
 }
 
 function createForegroundPolygons(uniforms:any) {
-    let geo = createInstancedPolygons(5000, 4);
+    //let mockFgGeo = new THREE.PlaneBufferGeometry(68,70,1,1);
+    //let mockFgMat = new THREE.MeshBasicMaterial({color:'white'});
+    //let mockFg = new THREE.Mesh(mockFgGeo, mockFgMat);
+
+    let geo = createInstancedPolygons(10000, 4);
     let shaderMaterial = new THREE.ShaderMaterial({
         uniforms : uniforms,
         vertexShader : foregroundPolygonShader,
@@ -357,6 +370,7 @@ function createForegroundPolygons(uniforms:any) {
     polygons.frustumCulled = false;
 
     let top = new THREE.Object3D();
+    //top.add(mockFg);
     top.add(polygons);
     return top;
 }
@@ -371,10 +385,12 @@ export class WebGLSupport {
     public scale = 1.01;
     public rotateZ = 0.01;
     public fade = 0.96;
-    public blending = 'Custom';
+    public blending = 'Normal';
     public equation = 'Add';
     public source = 'One';
     public destination = 'OneMinusSrcColor';
+
+    private startup: Function;
 
     constructor() {
         let self = this;
@@ -506,13 +522,6 @@ export class WebGLSupport {
         else
             scene.add(bp);
 
-        /*
-        let mockFgGeo = new THREE.PlaneBufferGeometry(68,70,1,1);
-        let mockFgMat = new THREE.MeshBasicMaterial({color:'white'});
-        let mockFg = new THREE.Mesh(mockFgGeo, mockFgMat);
-        scene.add(mockFg);
-        */
-
         const hashes: {[hash:string]:number;} = {
             aboutme: 1,
             experience: 5,
@@ -548,21 +557,25 @@ export class WebGLSupport {
         let loaded = 0;
         let renderTime = 0;
         let timeLoaded = 0;
+        //window.addLoadingTask();
         loader.load('/img/udgy-thick6.png', function ( texture ) {
                 foregroundUniforms.face.value = texture;
                 loaded++;
                 startFG();
+                //window.closeLoadingTask();
             });
+        //window.addLoadingTask();
         loader.load('/img/icons.png', function ( texture ) {
                 foregroundUniforms.icons.value = texture;
                 loaded++;
                 startFG();
+                //window.closeLoadingTask();
             });
         function startFG() {
             if (loaded === 2) {
                 timeLoaded = renderTime;
                 scene.add(fp);
-                console.log('All foreground textures loaded. Starting foreground rendering.');
+                //console.log('All foreground textures loaded. Starting foreground rendering.');
             }
         }
         function computeAspectRatio() {
@@ -581,7 +594,7 @@ export class WebGLSupport {
             if (self.useRenderTarget)
                 rtTextures[altRtTexture].setSize(window.innerWidth, window.innerHeight);
         };
-        function scaleObjects () {
+        function scaleObjects (tagTransition: number) {
             let aspect = computeAspectRatio();
             screenWidth = aspect*screenHeight;
 
@@ -599,15 +612,44 @@ export class WebGLSupport {
 
             let halfHeight = screenHeight/2;
             bp.position.x = -halfHeight*1.2 * aspect;
-            bp.position.y = -halfHeight*1.2;
+            bp.position.y = -halfHeight*1.5;
 
-            fp.position.x = (halfHeight * aspect - foregroundUniforms.width.value/2)*1.1;
-            fp.position.y = 0;
+            let headHeight = header.offsetTop*2 + header.offsetHeight;
+            let headWidth = header.offsetLeft*2 + header.offsetWidth;
+
+            let hRatio1 = 68/screenWidth;
+            let hRatio = headWidth/window.innerWidth;
+            let vRatio = headHeight/window.innerHeight;
+            let transition = 1 - 4*(0.5+(1-hRatio1)-hRatio);
+            if (transition > 1)
+                transition = 1;
+            if (transition < 0)
+                transition = 0;
+            let headScaleY1 = 1 - vRatio*transition;
+            let nx1 = (screenWidth - foregroundUniforms.width.value + vRatio*transition * 105)*0.55;
+            let ny1 = -vRatio*transition * 35;
+
+            let nx2:number, ny2:number, headScaleY2:number;
+            //headWidth = header.offsetWidth;
+            ny2 = (1-vRatio) * 35;
+            nx2 = (screenWidth - 3.5)/2 - vRatio * 34;
+            headScaleY2 = vRatio;
+
+            if (foregroundUniforms.newIdx.value === -1) tagTransition = 1 - tagTransition;
+            if (foregroundUniforms.oldIdx.value > -1 && foregroundUniforms.newIdx.value > -1) tagTransition = 1;
+
+            tagTransition = qubicEaseInOut(tagTransition, 0, 1, 1);
+
+            //console.log(tagTransition);
+            fp.position.x = nx1 * (1-tagTransition) + nx2 * tagTransition;
+            fp.position.y = ny1 * (1-tagTransition) + ny2 * tagTransition;
+            fp.scale.setScalar(headScaleY1 * (1-tagTransition) + headScaleY2 * tagTransition);
+
         };
         let lastResize = Date.now();
         function resizing () {
             lastResize = Date.now();
-            scaleObjects();
+            //scaleObjects();
         };
 
         window.addEventListener('resize', resizing);
@@ -630,6 +672,7 @@ export class WebGLSupport {
             target.y *= screenHeight/2;
         };
 
+        /*
         window.onmouseup = function (ev) {
             console.log('mouse: ' + mouse.x +'\t'+  mouse.y +'\t'+  mouse.z );
             console.log('target: ' + target.x +'\t'+  target.y +'\t'+  target.z );
@@ -637,6 +680,7 @@ export class WebGLSupport {
             fp.worldToLocal(t);
             console.log('local: ' + t.x +'\t'+  t.y +'\t'+  t.z);
         };
+        */
 
         window.addEventListener('hashchange', function (ev) {
             foregroundUniforms.oldIdx.value = foregroundUniforms.newIdx.value ;
@@ -654,6 +698,11 @@ export class WebGLSupport {
 
             t = t/1000;
             renderTime = t;
+
+            let tagTransition = t - timeLoaded - foregroundUniforms.transitionTime.value;
+            if (tagTransition > 1) tagTransition = 1;
+            scaleObjects(tagTransition);
+
 
             backgroundUniforms.time.value = t;
             backgroundUniforms.mouse.value.copy(target);
@@ -693,6 +742,14 @@ export class WebGLSupport {
             altRtTexture %= 2;
 
         };
-        animate(0);
+        this.startup = animate;
+        /*
+        window.addCallOnLoaded( () => {
+            //timeLoaded = renderTime;
+        } );
+        */
     };
+    public start() {
+        this.startup(0);
+    }
 }

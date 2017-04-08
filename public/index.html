@@ -1,8 +1,10 @@
 <!DOCTYPE html>
-<html class="drk2 headers typo2">
+<html class="drk3 headers typo2">
 
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, height=device-height, initial-scale=1">
+    <meta name="mobile-web-app-capable" content="yes">
     <title>Sebastian Ferreyra Pons</title>
     <link rel='stylesheet' type='text/css' href='https://fonts.googleapis.com/css?family=Ubuntu:500,400,300,300italic'>
     <link rel="stylesheet" type='text/css' href="style.css" media="screen">
@@ -13,37 +15,44 @@
     <header>
         <h1>Sebastian&nbsp;Ferreyra&nbsp;Pons</h1>
         <h2>Software&nbsp;Architect&nbsp;-&nbsp;Interactive&nbsp;Graphics&nbsp;Designer</h2>
-        <menu id="menu" class='screen'>
+        <menu id="menu" class='screen hidden-while-loading'>
             <a id='p1a' href='#aboutme'>
-                <img src="img/aboutme.svg">
-                <h3>About me</h3>
+                <img src="img/aboutme1.svg">
+                <h3>About&nbsp;me</h3>
             </a>
             <a id='p2a' href='#education'>
-                <img src="img/education.svg">
+                <img src="img/education1.svg">
                 <h3>Education</h3>
             </a>
             <a id='p3a' href='#experience'>
-                <img src="img/experience.svg">
+                <img src="img/experience1.svg">
                 <h3>Experience</h3>
             </a>
             <a id='p4a' href='#skills'>
-                <img src="img/skills.svg">
+                <img src="img/skills1.svg">
                 <h3>Skills</h3>
             </a>
             <a id='p5a' href='#lab'>
-                <img src="img/lab.svg">
+                <img src="img/lab1.svg">
                 <h3>Experiments</h3>
             </a>
             <a id='p6a' href='#blog'>
-                <img src="img/portfolio.svg">
+                <img src="img/portfolio1.svg">
                 <h3>Articles</h3>
             </a>
         </menu>
+        <script>
+            //document.write('<h3 id="loadingMessage">Loading...</h3>');
+        </script>
     </header>
 
-    <section id="cv">
+    <section id="cv" class="hidden-while-loading">
         <section class="content" id="aboutme">
             <h2>About me</h2>
+            <h3>Foreword</h3>
+            <p>Honoring the engineering intention behind the design of CSS/HTML of separation of presentantion and content, printing this page 
+                outputs the information as a CV.
+            </p>
             <h3>Personal Information</h3>
             <h4>Name</h4>
             <address>Sebastian E. Ferreyra Pons</address>
@@ -99,7 +108,7 @@
             <p>Organization of educational workshops teaching web technologies like HTML5, CSS and
                Javascript for contemporary and conceptual artists. Casa Nave, Santiago del Estero, Argentina.</p>
 
-            <h3>2013-2015 / Techincal Project Manager and Software Architect</h3>
+            <h3>2013-2015 / Technical Project Manager and Software Architect</h3>
             <p>Project manager for Ensembleweb developing a <a href="https://playforsales.com/">gameification
                 based website</a> for enhancing engagement and performance in sales workgroups for EnsembleWeb,
                 a Canadian web site development company. Tasks involved hiring, training, directing & maintaining
@@ -280,6 +289,23 @@
         </section>
     </section>
 
+    <script>
+        var header = document.querySelector('body > header');
+        var h1 = document.querySelector('body > header > h1');
+        var h2 = document.querySelector('body > header > h2');
+        var cv = document.querySelector('#cv');
+        var h1fs = parseInt(window.getComputedStyle(h1).fontSize) / h1.offsetWidth;
+        var h2fs = parseInt(window.getComputedStyle(h2).fontSize) / h2.offsetWidth;
+
+        function resize() {
+            h1.style.fontSize = 0.98 * header.offsetWidth * h1fs + 'px';
+            h2.style.fontSize = 0.98 * header.offsetWidth * h2fs + 'px';
+            cv.style.top = header.offsetTop*2 + header.offsetHeight  + 'px';
+        }
+        resize();
+
+        window.addEventListener('resize', resize);
+    </script>
     <script src="js/components/requirejs/require.js"></script>
     <script src="js/main-built.js"></script>
     <script>
