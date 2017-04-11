@@ -166,6 +166,11 @@ const foregroundPolygonShader = `
         c.w = 1.0 - c.w;
         return c;
       }
+      vec4 getFace(vec2 coord) {
+        vec4 c = texture2D(face, coord);
+        c.w = 1.0 - c.w;
+        return c;
+      }
 
       vec3 process(float idx, vec3 fPos) {
         float x0 = (rand(vec2(idx,4.0)))*width;
@@ -182,9 +187,9 @@ const foregroundPolygonShader = `
         coord += vec2(sin(time/1.6+coord.x*3.1415)/25.0,cos(time/2.0+coord.y*3.1415)/20.0);
 
         vec4 newColor, oldColor;
-        newColor = (newIdx>=0.0) ? getIcon(newIdx, coord) : texture2D(face, coord);
+        newColor = (newIdx>=0.0) ? getIcon(newIdx, coord) : getFace(coord);
         if (trans < 1.0) {
-          oldColor = (oldIdx>=0.0) ? getIcon(oldIdx, coord) : texture2D(face, coord);
+          oldColor = (oldIdx>=0.0) ? getIcon(oldIdx, coord) : getFace(coord);
           vFaceColor = mix(oldColor, newColor, trans);
         } else {
           vFaceColor = newColor;
@@ -558,7 +563,7 @@ export class WebGLSupport {
         let renderTime = 0;
         let timeLoaded = 0;
         //window.addLoadingTask();
-        loader.load('/img/udgy-thick6.png', function ( texture ) {
+        loader.load('/img/udgy-thick7.png', function ( texture ) {
                 foregroundUniforms.face.value = texture;
                 loaded++;
                 startFG();
@@ -614,7 +619,7 @@ export class WebGLSupport {
             bp.position.x = -halfHeight*1.2 * aspect;
             bp.position.y = -halfHeight*1.5;
 
-            let headHeight = header.offsetTop*2 + header.offsetHeight;
+            let headHeight = header.offsetTop*1.5 + header.offsetHeight;
             let headWidth = header.offsetLeft*2 + header.offsetWidth;
 
             let hRatio1 = 68/screenWidth;
