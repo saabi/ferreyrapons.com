@@ -198,7 +198,7 @@ const foregroundPolygonShader = `
 
         float prox = 7.0-smoothstep(0.0, 20.0, distance(mouse,mid1))*6.0;
   
-        fPos *= a*t*prox;
+        fPos *= a*t*prox*size;
         fPos += mid1;
 
         return fPos;
@@ -356,7 +356,7 @@ function createForegroundPolygons(uniforms:any) {
     //let mockFgMat = new THREE.MeshBasicMaterial({color:'white'});
     //let mockFg = new THREE.Mesh(mockFgGeo, mockFgMat);
 
-    let geo = createInstancedPolygons(10000, 4);
+    let geo = createInstancedPolygons(5000, 4);
     let shaderMaterial = new THREE.ShaderMaterial({
         uniforms : uniforms,
         vertexShader : foregroundPolygonShader,
@@ -548,7 +548,7 @@ export class WebGLSupport {
             icons: { type: 't', value: null },
             width : { type: "f", value: 68.0 },
             height : { type: "f", value: 70.0 },
-            size : { type: "f", value: 1.0 },
+            size : { type: "f", value: 2.0 },
             transitionTime : { type: "f", value: 0 },
             oldIdx : { type: "f", value: getHashIdx() },
             newIdx : { type: "f", value: getHashIdx() },
