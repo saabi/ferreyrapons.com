@@ -1,7 +1,7 @@
 # ferreyrapons.com
 ## Personal website
 
-Here's the source code for my website so that you may peruse it at your leisurly will.
+Here's the source code for my website so that you may peruse it at your leisurely will.
 
 The code for handling the WebGL particles might be of interest to some out there.
 
