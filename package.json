@@ -9,6 +9,9 @@
   },
   "author": "Sebastian Ferreyra",
   "dependencies": {
+    "@types/dat-gui": "^0.6.2",
+    "@types/koa": "^2.0.39",
+    "@types/three": "^0.84.3",
     "history": "^2.0.0",
     "koa": "^2.0.0-alpha.3",
     "koa-add-trailing-slashes": "^1.1.0",

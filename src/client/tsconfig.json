@@ -15,12 +15,6 @@
     "sourceMap": true
   },
   "files": [
-    "../../typings/index.d.ts",
-    /* "../common/Vec2D.ts", */
-    /* "Path2D.d.ts", */
-    /* "LoadMeter.ts", */
-    /* "main.ts", */
-    /* "OrbitControls.ts", */
     "webgl.ts",
     "client.ts"
   ]
