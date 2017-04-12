@@ -49,8 +49,8 @@
     <section id="cv" class="hidden-while-loading">
         <section class="content" id="aboutme">
             <h2>About me</h2>
-            <h3>Foreword</h3>
-            <p>Honoring the engineering intention behind the design of CSS/HTML of separation of presentantion and content, printing this page 
+            <h3 class="screen">Foreword</h3>
+            <p class="screen">Honoring the engineering intention behind the design of CSS/HTML of separation of presentantion and content, printing this page 
                 outputs the information as a CV.
             </p>
             <h3>Personal Information</h3>
@@ -382,6 +382,28 @@
         var headerStyle = document.createElement('style');
         headerStyle.media = "screen";
         document.getElementsByTagName('head')[0].appendChild(headerStyle);
+
+        var sections = Array.prototype.slice.call( document.getElementsByClassName('content') );
+        var subsection;
+        for (var i in sections) {
+            var section = sections[i];
+            subsection = null;
+            var children = Array.prototype.slice.call( section.childNodes );
+            for (var j in children) {
+                var el = children[j];
+                if (el.tagName === 'H2' || (el.tagName === undefined && subsection === null))
+                    continue;
+                if (el.tagName === 'H3') {
+                    if (subsection)
+                        section.appendChild(subsection);
+                    subsection = document.createElement('section');
+                }
+                if (subsection)
+                    subsection.appendChild(el);
+            }
+            if (subsection)
+                section.appendChild(subsection);
+        }
 
         function resize() {
             headerStyle.textContent = `

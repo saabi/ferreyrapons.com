@@ -1,13 +1,25 @@
 .screen {display:none}
 
 body {
+    font-family: 'Ubuntu', sans-serif;
     font-size: 12pt;
 }
 
 #cv h1,#cv h2,#cv h3,#cv h4,#cv h5,#cv h6, #cv p { margin:0; padding: 0; clear:both;}
-#cv h1,#cv h2,#cv h3 { 	padding: 0 1ex; font: bold 12pt sans-serif; }
+#cv h1,#cv h2,#cv h3 { 	padding: 0 1ex; font: bold 12pt 'Ubuntu', sans-serif; }
 
 body, #cv h4, #cv p, #cv a, #cv address { font: 12pt serif; }
+
+body > header > h1 {
+    text-align: right;
+    font: bold 25pt 'Ubuntu', sans-serif;
+    margin: 0;
+}
+body > header > h2 {
+    text-align: right;
+    font: 12.3pt 'Ubuntu', sans-serif;
+    margin: 0;
+}
 
 #cv address { display:block; }
 
@@ -15,7 +27,14 @@ body, #cv h4, #cv p, #cv a, #cv address { font: 12pt serif; }
 
 #cv blockquote { margin: 0 0 0 0; padding: 0; }
 #cv div p { padding: .25ex 1ex .5ex 4em; }
+.content {
+    margin-top: 24pt;
+    page-break-inside: avoid;
 
+}
+.content section {
+    page-break-inside: avoid;
+}
 #cv h1 {
     background-color : #B0B0B0;
     text-align : right;
@@ -52,7 +71,8 @@ body, #cv h4, #cv p, #cv a, #cv address { font: 12pt serif; }
     margin: 0;
     padding: 0 7px 0 10em;
 }
-#cv p { margin:0.5em 0; }
+#cv p { margin:0.5em 0;
+margin-bottom: 16pt; }
 
 #cv div.pi  {
     padding : 5px 7px 8px 0;
