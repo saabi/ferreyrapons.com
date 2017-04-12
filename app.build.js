@@ -1,8 +1,8 @@
 ({
     baseUrl: "public/js",
     paths: {
-        "three": "components/three.js/three",
-        "dat": "components/dat-gui/build/dat.gui"
+        "three": "components/threejs/build/three",
+        "dat": "components/dat.gui/build/dat.gui"
     },
     shim: {
         three: {
