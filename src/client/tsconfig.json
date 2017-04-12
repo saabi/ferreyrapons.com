@@ -15,7 +15,7 @@
     "sourceMap": true
   },
   "files": [
-    "../../typings/browser.d.ts",
+    "../../typings/index.d.ts",
     /* "../common/Vec2D.ts", */
     /* "Path2D.d.ts", */
     /* "LoadMeter.ts", */
