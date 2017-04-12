@@ -252,7 +252,7 @@
                 in print, radio, TV and the web. Direct marketing experience.</p>
         </section>
 
-        <section class="content" id="lab">
+        <section class="content screen" id="lab">
             <h2>Experiments</h2>
 
             <h3>Stateless Webgl Shader Particles</h3>
@@ -283,7 +283,7 @@
                 meantime you may check out my <a href="http://seb.citycolor.net/">old website</a>.</p>
         </section>
 
-        <section class="content" id="blog">
+        <section class="content screen" id="blog">
             <h2>Articles</h2>
             <h3>Collections: Multivalue-per-key Maps</h3>
             <p>The Java Collections API in java.util.* is a very powerful and fundamental toolkit for 
@@ -379,11 +379,15 @@
         var cv = document.querySelector('#cv');
         var h1fs = parseInt(window.getComputedStyle(h1).fontSize) / h1.offsetWidth;
         var h2fs = parseInt(window.getComputedStyle(h2).fontSize) / h2.offsetWidth;
+        var headerStyle = document.createElement('style');
+        headerStyle.media = "screen";
+        document.getElementsByTagName('head')[0].appendChild(headerStyle);
 
         function resize() {
-            h1.style.fontSize = 0.98 * header.offsetWidth * h1fs + 'px';
-            h2.style.fontSize = 0.98 * header.offsetWidth * h2fs + 'px';
-            cv.style.top = header.offsetTop*1.5 + header.offsetHeight  + 'px';
+            headerStyle.textContent = `
+                body > header > h1 {font-size:${0.98 * header.offsetWidth * h1fs}px}
+                body > header > h2 {font-size:${0.98 * header.offsetWidth * h2fs}px}
+                #cv {top:${header.offsetTop*1.5 + header.offsetHeight}px}`;
         }
         resize();
 
