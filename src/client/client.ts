@@ -3,6 +3,7 @@
  */
 
 import {WebGLSupport} from "webgl";
+import {GUI} from "dat-gui";
 /*
 interface MyWindow extends Window {
     webgl: WebGLSupport;
@@ -47,7 +48,7 @@ modal.onclick = function(ev) {
 let webgl = new WebGLSupport();
 
 function createGUI () {
-    let gui = new dat.GUI();
+    let gui = new GUI();
     gui.add(webgl, 'gradient');
     gui.add(webgl, 'feedback');
     gui.add(webgl, 'scale', 0.8, 1.2);

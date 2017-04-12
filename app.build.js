@@ -2,7 +2,7 @@
     baseUrl: "public/js",
     paths: {
         "three": "components/threejs/build/three",
-        "dat": "components/dat.gui/build/dat.gui"
+        "dat-gui": "components/dat.gui/build/dat.gui"
     },
     shim: {
         three: {
@@ -10,6 +10,6 @@
         }
     },
     name: "main",
-    include: ["three","dat"],
+    include: ["three","dat-gui"],
     out: "public/js/main-built.js"
 })
