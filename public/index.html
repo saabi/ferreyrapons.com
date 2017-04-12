@@ -285,7 +285,90 @@
 
         <section class="content" id="blog">
             <h2>Articles</h2>
+            <h3>Collections: Multivalue-per-key Maps</h3>
+            <p>The Java Collections API in java.util.* is a very powerful and fundamental toolkit for 
+                managing sets of objects and is used in practically all facets of software development, 
+                from low-level caches, to O/R mapping, to GUIs.</p>
+            <p>However, occasionally we have needs that extend beyond the basic functionality provided 
+                in the API. One very common need not handled by the collections framework is to provide 
+                maps that can hold many values for a particular key, much like databases feature non-unique 
+                key indexes. Having such a collection class would make this job very simple in Java.</p>
+            <p><a href="www.javalobby.org/forums/thread.jspa?threadID=17048">Continue reading...</a></p>
 
+            <h3>Algorithms: Phonetic Coder for Spanish Words</h3>
+            <p>Sometime ago I posted some code which ranks names according to their similarities based on 
+                Levenshtein's word difference algorithm. In this article I mentioned I had developed an 
+                algorithm to encode names quasi-phonetically according to their pronounciation in Spanish, 
+                much in the spirit of Soundex and Metaphone.</p>
+            <p>Since then, I've received a few requests by email with respect to this algorithm so I think 
+                it would be good to answer them all in a single Java Tip, while simultaneusly showing how 
+                to use Regular Expressions efficiently in Java.</p>
+            <p><a href="http://www.javalobby.org/java/forums/t16936.html">Continue reading...</a></p>
+
+            <h3>Technique: Generic Linked Lists through Inheritance</h3>
+            <p>Although the java.util.LinkedList class included in the JDK is good enough for most cases 
+                requiring linked lists, sometimes conditions will arise when it might not be as useful.</p>
+            <p>Here I propose an alternative implementation using a combination of generics and inheritance 
+                optimized for better memory economy and possibly a slight increase in speed, although the 
+                latter should be barely noticeable. This example will also illustrate some interesting 
+                applications of generics.</p>
+            <p>To understand where I'm coming from I'll need to explain some things about how Java stores 
+                objects in the heap and how this affects the standard LinkedList implementation.</p>
+            <p><a href="www.javalobby.org/java/forums/t16558.html">Continue reading...</a></p>
+
+            <h3>Persistence Layers</h3>
+            <p>As I undertake my first project management role, where Ill be leading a really small group of 
+                3 developers (myself included) into an agile development effort, Im allowing myself to look at 
+                all the unconventional technologies on the look out for interesting innovations before the 
+                design is completely fixed. I will however keep a conservative attitude so as not to get too 
+                excited about the toys to be found out in the wild (wild toys might eat your project and 
+                your budget!).</p>
+            <p><a href="www.javalobby.org/java/forums/t16384.html">Continue reading...</a></p>
+
+            <h3>Text: Human Names Similarity using Levenshtein Algorithm</h3>
+            <p>Using the previously posted Levenshtein Edit Distance method, this one builds upon the 
+                functionality to provide a name similarity ranking.</p>
+            <p>The benefits it provides over using plain LD is that it is indifferent to the order a person's 
+                name is written, thus being very useful for sorting results of name searches.</p>
+            <p><a href="www.javalobby.org/java/forums/t16000.html">Continue reading...</a></p>
+
+            <h3>Text: Levenshtein Word Distance</h3>
+            <p>Here's a small implementation of the Levenshtein Word Distance algorythm written in Java.</p>
+            <p>The algorythm is good for measuring edit distance between two words and is normally used for 
+                spell checking and similarity sorting, but I've been told it can be used for other things as 
+                well. If you want some in depth explanation of how it works check out this site or this one 
+                that has a nice little applet showing its internals at work.</p>
+            <p><a href="www.javalobby.org/java/forums/t15908.html">Continue reading...</a></p>
+
+            <h3>Swing: Tiling Windows</h3>
+            <p>JDesktopPane as it is doesn't provide tiling and cascading. Here's the routine for tiling. Its 
+                priority is to get as many windows as possible to have the same size. Here's the code 
+                cascading windows.</p>
+            <p><a href="www.javalobby.org/java/forums/t15696.html">Continue reading...</a></p>
+
+            <h3>Swing: Cascading Windows</h3>
+            <p>JDesktopPane as it is doesn't provide tiling and cascading. Here's a simple routine for cascading.</p>
+            <p>The code is implemented in static methods for simplicity but some might prefer to include the 
+                methods in a subclass of JDesktopPane or a DesktopManager.</p>
+            <p><a href="www.javalobby.org/java/forums/t15690.html">Continue reading...</a></p>
+            
+            <h3>Graphics: Painting Textures Fast</h3>
+            <p>Following the recent Java2D discussion some of you might be wondering how to put some of that 
+                information to good use. A deeper understanding of why TexturePaint results in lower preformance 
+                can be found in that thread.</p>
+            <p>Here's a simple way to paint an arbitrary Java2D Shape with a texture using all the hardware 
+                acceleration the current rendering pipelines can provide. This routine, although still having 
+                lots of room for important optimizations, is a lot faster than ye' old TexturePaint.</p>
+            <p><a href="www.javalobby.org/java/forums/t15529.html">Continue reading...</a></p>
+
+            <h3>Face to face with Java2D</h3>
+            <p>Woa! Don't fire up those flame-throwers just yet! This isn't a thread about why native code is 
+                better, etc, etc. I mean to say that Java2D could fly just using better Java code.</p>
+            <p>Take Color, GradientPaint and TexturePaint and the low-level pipelines that actually paint stuff 
+                with these classes for example. Here are three implementations of the Paint interface that really 
+                make me wonder what's going on over at Sun.</p>
+            <p><a href="www.javalobby.org/java/forums/t15397.html">Continue reading...</a></p>
+            
         </section>
     </section>
 
